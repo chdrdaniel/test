@@ -737,8 +737,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public InvoiceVO getInvoice(String orderSn) {
         //获取发货单
         InvoiceVO invoice = this.baseMapper.getInvoice(orderSn);
+        if(invoice==null){
+            throw new ServiceException(ResultCode.ORDER_INVOICE);
+        }
         //打印时间
-        invoice.setPrintTime(cn.lili.common.utils.DateUtil.toString(new Date()));
+        invoice.setPrintTime(new Date());
         //获取打印单商品列表
         invoice.setGoodsList(goodsService.getInvoiceGoodsList(orderSn));
         return invoice;

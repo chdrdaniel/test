@@ -4,6 +4,7 @@ import cn.lili.modules.goods.entity.dos.Goods;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,10 +19,10 @@ public class InvoiceVO {
     private String orderSn;
 
     @ApiModelProperty(value = "订单时间")
-    private String orderTime;
+    private Date orderTime;
 
     @ApiModelProperty(value = "打印时间")
-    private String printTime;
+    private Date printTime;
 
     @ApiModelProperty(value = "收件人")
     private String  userName;

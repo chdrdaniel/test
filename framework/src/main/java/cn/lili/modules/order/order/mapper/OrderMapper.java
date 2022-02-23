@@ -107,7 +107,6 @@ public interface OrderMapper extends BaseMapper<Order> {
             "li_order AS a " +
             "INNER JOIN li_member AS b ON a.member_id = b.id " +
             "INNER JOIN li_store_detail AS c ON b.store_id = c.store_id  " +
-            "WHERE" +
-            "a.sn = #{orderSn}")
+            "WHERE a.sn = #{orderSn}")
     InvoiceVO getInvoice(@Param("orderSn") String orderSn);
 }
