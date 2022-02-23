@@ -11,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class StoreOtherVO {
+    @ApiModelProperty(value = "营业执照号")
+    private String licenseNum;
 
     @ApiModelProperty(value = "公司名称")
     private String companyName;
@@ -20,6 +22,9 @@ public class StoreOtherVO {
 
     @ApiModelProperty(value = "公司地址地区")
     private String companyAddressPath;
+
+    @ApiModelProperty(value = "法人姓名")
+    private String legalName;
 
     @ApiModelProperty(value = "营业执照电子版")
     private String licencePhoto;

@@ -106,4 +106,6 @@ public class StoreBuyerController {
     public ResultMessage<StoreDetailVO> apply() {
         return ResultUtil.data(storeDetailService.getStoreDetailVOByMemberId(UserContext.getCurrentUser().getId()));
     }
+
+
 }
