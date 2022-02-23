@@ -7,6 +7,7 @@ import cn.lili.modules.member.entity.dto.MemberAddressDTO;
 import cn.lili.modules.order.order.entity.dos.Order;
 import cn.lili.modules.order.order.entity.dto.OrderExportDTO;
 import cn.lili.modules.order.order.entity.dto.OrderSearchParams;
+import cn.lili.modules.order.order.entity.vo.InvoiceVO;
 import cn.lili.modules.order.order.entity.vo.OrderDetailVO;
 import cn.lili.modules.order.order.entity.vo.OrderSimpleVO;
 import cn.lili.modules.order.order.service.OrderPriceService;
@@ -120,4 +121,12 @@ public class OrderManagerController {
     public ResultMessage<Object> getTraces(@NotBlank(message = "订单编号不能为空") @PathVariable String orderSn) {
         return ResultUtil.data(orderService.getTraces(orderSn));
     }
+
+    @ApiOperation(value = "打印发货单")
+    @GetMapping(value = "/getInvoice")
+    public ResultMessage<InvoiceVO> getInvoice(String orderSn) {
+
+        return ResultUtil.data( orderService.getInvoice(orderSn));
+    }
+
 }

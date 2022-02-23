@@ -452,6 +452,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                         .eq(Goods::getMarketEnable, GoodsStatusEnum.UPPER.name()));
     }
 
+    @Override
+    public List<Goods> getInvoiceGoodsList(String orderSn) {
+        return this.baseMapper.getInvoiceGoodsList(orderSn);
+    }
+
 
     /**
      * 发送删除es索引的信息

@@ -2,6 +2,7 @@ package cn.lili.modules.order.order.mapper;
 
 import cn.lili.modules.order.order.entity.dos.Order;
 import cn.lili.modules.order.order.entity.dto.OrderExportDTO;
+import cn.lili.modules.order.order.entity.vo.InvoiceVO;
 import cn.lili.modules.order.order.entity.vo.OrderSimpleVO;
 import cn.lili.modules.order.order.entity.vo.PaymentLog;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -84,5 +85,29 @@ public interface OrderMapper extends BaseMapper<Order> {
             " FROM li_order o INNER JOIN li_order_item AS oi on o.sn = oi.order_sn ${ew.customSqlSegment} ")
     List<Order> queryListByParams(@Param(Constants.WRAPPER) Wrapper<Order> queryWrapper);
 
-
+    /**
+     * 发货单
+     * @param orderSn
+     * @return
+     */
+    @Select("SELECT " +
+            "a.sn as orderSn," +
+            "a.create_time as orderTime," +
+            "b.username as userName," +
+            "b.nick_name as nickName," +
+            "b.mobile as mobile," +
+            "b.region as region," +
+            "a.remark AS leavingMessage," +
+            "c.store_name as storeName," +
+            "c.sales_consignee_name as salesConsigneeName," +
+            "c.sales_consignee_mobile as salesConsigneeMobile," +
+            "c.sales_consignee_address_path as salesConsigneeAddressPath," +
+            "c.sales_consignee_detail as salesConsigneeDetail "+
+            "FROM " +
+            "li_order AS a " +
+            "INNER JOIN li_member AS b ON a.member_id = b.id " +
+            "INNER JOIN li_store_detail AS c ON b.store_id = c.store_id  " +
+            "WHERE" +
+            "a.sn = #{orderSn}")
+    InvoiceVO getInvoice(@Param("orderSn") String orderSn);
 }

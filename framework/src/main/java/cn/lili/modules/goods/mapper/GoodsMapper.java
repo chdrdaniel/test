@@ -47,4 +47,12 @@ public interface GoodsMapper extends BaseMapper<Goods> {
      */
     @Select("select g.* from li_goods as g ")
     IPage<GoodsVO> queryByParams(IPage<GoodsVO> page, @Param(Constants.WRAPPER) Wrapper<GoodsVO> queryWrapper);
+
+    /**
+     * 发货单商品集合
+     * @param orderSn
+     * @return
+     */
+    @Select("SELECT * FROM li_goods WHERE id IN (SELECT goods_id FROM li_order_item WHERE order_sn = #{orderSn})")
+    List<Goods> getInvoiceGoodsList(@Param("orderSn") String orderSn);
 }

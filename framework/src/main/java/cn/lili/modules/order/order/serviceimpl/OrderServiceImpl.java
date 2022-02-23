@@ -16,7 +16,10 @@ import cn.lili.common.security.OperationalJudgment;
 import cn.lili.common.security.context.UserContext;
 import cn.lili.common.security.enums.UserEnums;
 import cn.lili.common.utils.SnowFlake;
+import cn.lili.modules.goods.entity.dos.Goods;
 import cn.lili.modules.goods.entity.dto.GoodsCompleteMessage;
+import cn.lili.modules.goods.service.GoodsService;
+import cn.lili.modules.goods.service.GoodsSkuService;
 import cn.lili.modules.member.entity.dto.MemberAddressDTO;
 import cn.lili.modules.order.cart.entity.dto.TradeDTO;
 import cn.lili.modules.order.order.aop.OrderLogPoint;
@@ -29,10 +32,7 @@ import cn.lili.modules.order.order.entity.dto.OrderExportDTO;
 import cn.lili.modules.order.order.entity.dto.OrderMessage;
 import cn.lili.modules.order.order.entity.dto.OrderSearchParams;
 import cn.lili.modules.order.order.entity.enums.*;
-import cn.lili.modules.order.order.entity.vo.OrderDetailVO;
-import cn.lili.modules.order.order.entity.vo.OrderSimpleVO;
-import cn.lili.modules.order.order.entity.vo.OrderVO;
-import cn.lili.modules.order.order.entity.vo.PaymentLog;
+import cn.lili.modules.order.order.entity.vo.*;
 import cn.lili.modules.order.order.mapper.OrderItemMapper;
 import cn.lili.modules.order.order.mapper.OrderMapper;
 import cn.lili.modules.order.order.service.*;
@@ -141,6 +141,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private TradeService tradeService;
+    /**
+     * 商品
+     */
+    @Autowired
+    private GoodsService goodsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -726,6 +731,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
         }
         return false;
+    }
+
+    @Override
+    public InvoiceVO getInvoice(String orderSn) {
+        //获取发货单
+        InvoiceVO invoice = this.baseMapper.getInvoice(orderSn);
+        //打印时间
+        invoice.setPrintTime(cn.lili.common.utils.DateUtil.toString(new Date()));
+        //获取打印单商品列表
+        invoice.setGoodsList(goodsService.getInvoiceGoodsList(orderSn));
+        return invoice;
     }
 
     /**

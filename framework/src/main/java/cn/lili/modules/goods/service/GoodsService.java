@@ -173,4 +173,10 @@ public interface GoodsService extends IService<Goods> {
      */
     long countStoreGoodsNum(String storeId);
 
+    /**
+     * 发货单商品集合
+     * @param orderSn
+     * @return
+     */
+    List<Goods> getInvoiceGoodsList(String orderSn);
 }
