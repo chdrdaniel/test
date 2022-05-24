@@ -39,6 +39,13 @@ public interface EsGoodsIndexService {
     void addIndex(EsGoodsIndex goods);
 
     /**
+     * 添加商品索引
+     *
+     * @param goods 商品索引信息
+     */
+    void addIndex(List<EsGoodsIndex> goods);
+
+    /**
      * 更新商品索引
      *
      * @param goods 商品索引信息
@@ -71,9 +78,9 @@ public interface EsGoodsIndexService {
     /**
      * 删除索引
      *
-     * @param goods 商品索引信息
+     * @param queryFields 查询条件 (key 为字段，value为字段值)
      */
-    void deleteIndex(EsGoodsIndex goods);
+    void deleteIndex(Map<String, Object> queryFields);
 
     /**
      * 删除索引
@@ -132,20 +139,20 @@ public interface EsGoodsIndexService {
     void updateEsGoodsIndexAllByList(BasePromotions promotion, String key);
 
     /**
-     * 删除指定商品的促销信息
+     * 删除索引中指定的促销活动id的促销活动
      *
-     * @param skuIds        skuId列表
-     * @param promotionType 促销类型
+     * @param skuIds      商品skuId
+     * @param promotionsKey 促销活动Key
      */
-    void deleteEsGoodsPromotionIndexByList(List<String> skuIds, PromotionTypeEnum promotionType);
+    void deleteEsGoodsPromotionByPromotionKey(List<String> skuIds, String promotionsKey);
+
 
     /**
      * 删除索引中指定的促销活动id的促销活动
      *
-     * @param skuIds      商品skuId
-     * @param promotionId 促销活动Id
+     * @param promotionsKey 促销活动Key
      */
-    void deleteEsGoodsPromotionByPromotionId(List<String> skuIds, String promotionId);
+    void deleteEsGoodsPromotionByPromotionKey(String promotionsKey);
 
     /**
      * 清除所以商品索引的无效促销活动

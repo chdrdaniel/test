@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 库存扣减，他表示了订单状态是否出库成功
@@ -156,7 +157,7 @@ public class StockUpdateExecute implements OrderStatusChangeEvent {
      * @param stocks
      */
     private void checkStocks(List<Integer> stocks, OrderDetailVO order) {
-        if (order.getOrderItems().size() == stocks.size()) {
+        if (!stocks.isEmpty() && order.getOrderItems().size() == stocks.size() && stocks.stream().anyMatch(Objects::nonNull)) {
             return;
         }
         initSkuCache(order.getOrderItems());
@@ -332,7 +333,7 @@ public class StockUpdateExecute implements OrderStatusChangeEvent {
                 Integer num = promotionGoods.get(i).getNum();
                 promotionGoods.get(i).setNum((num != null ? num : 0) + order.getOrder().getGoodsNum());
             }
-            promotionGoodsService.updateBatchById(promotionGoods);
+            promotionGoodsService.updatePromotionGoodsStock(promotionGoods);
         }
         //商品库存，包含sku库存集合，批量更新商品库存相关
         goodsSkuService.updateGoodsStuck(goodsSkus);

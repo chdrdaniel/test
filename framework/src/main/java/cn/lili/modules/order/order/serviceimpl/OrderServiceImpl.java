@@ -62,6 +62,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,7 @@ import java.util.stream.Collectors;
  * @since 2020/11/17 7:38 下午
  */
 @Service
+@Slf4j
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
     private static final String ORDER_SN_COLUMN = "order_sn";
@@ -339,6 +341,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Order order = this.getBySn(orderSn);
         //如果订单已支付，就不能再次进行支付
         if (order.getPayStatus().equals(PayStatusEnum.PAID.name())) {
+            log.error("订单[ {} ]检测到重复付款，请处理", orderSn);
             throw new ServiceException(ResultCode.PAY_DOUBLE_ERROR);
         }
 
@@ -351,7 +354,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setCanReturn(!PaymentMethodEnum.BANK_TRANSFER.name().equals(order.getPaymentMethod()));
         this.updateById(order);
 
-        //记录订单流水
+        //记录店铺订单支付流水
         storeFlowService.payOrder(orderSn);
 
         //发送订单已付款消息
@@ -447,7 +450,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //获取订单信息
         Order order = this.getBySn(orderSn);
         //获取踪迹信息
-        return logisticsService.getLogistic(order.getLogisticsCode(), order.getLogisticsNo());
+        String str=order.getConsigneeMobile();
+        return logisticsService.getLogistic(order.getLogisticsCode(), order.getLogisticsNo(), str.substring(str.length()-4));
     }
 
     @Override
@@ -963,15 +967,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             throw new ServiceException(ResultCode.ORDER_NOT_EXIST);
         }
         //判断是否为虚拟订单
-        else if (!order.getOrderType().equals(OrderTypeEnum.VIRTUAL.name())) {
+        if (!order.getOrderType().equals(OrderTypeEnum.VIRTUAL.name())) {
             throw new ServiceException(ResultCode.ORDER_TAKE_ERROR);
         }
         //判断虚拟订单状态
-        else if (!order.getOrderStatus().equals(OrderStatusEnum.TAKE.name())) {
+        if (!order.getOrderStatus().equals(OrderStatusEnum.TAKE.name())) {
             throw new ServiceException(ResultCode.ORDER_TAKE_ERROR);
         }
         //判断验证码是否正确
-        else if (!verificationCode.equals(order.getVerificationCode())) {
+        if (!verificationCode.equals(order.getVerificationCode())) {
             throw new ServiceException(ResultCode.ORDER_TAKE_ERROR);
         }
     }

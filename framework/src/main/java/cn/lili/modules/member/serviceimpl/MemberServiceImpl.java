@@ -198,6 +198,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
             Member member = new Member(username, UuidUtils.getUUID(), authUser.getAvatar(), authUser.getNickname(),
                     authUser.getGender() != null ? Convert.toInt(authUser.getGender().getCode()) : 0);
             registerHandler(member);
+            member.setPassword(DEFAULT_PASSWORD);
             //绑定登录方式
             loginBindUser(member, authUser.getUuid(), authUser.getSource());
             return memberTokenGenerate.createToken(member, false);
@@ -284,6 +285,67 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     }
 
     @Override
+    public boolean canInitPass() {
+        AuthUser tokenUser = UserContext.getCurrentUser();
+        if (tokenUser == null) {
+            throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+        }
+        Member member = this.getById(tokenUser.getId());
+        if (member.getPassword().equals(DEFAULT_PASSWORD)) {
+            return true;
+        }
+        return false;
+
+    }
+
+    @Override
+    public void initPass(String password) {
+        AuthUser tokenUser = UserContext.getCurrentUser();
+        if (tokenUser == null) {
+            throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+        }
+        Member member = this.getById(tokenUser.getId());
+        if (member.getPassword().equals(DEFAULT_PASSWORD)) {
+            //修改会员密码
+            LambdaUpdateWrapper<Member> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
+            lambdaUpdateWrapper.eq(Member::getId, member.getId());
+            lambdaUpdateWrapper.set(Member::getPassword, new BCryptPasswordEncoder().encode(password));
+            this.update(lambdaUpdateWrapper);
+        }
+        throw new ServiceException(ResultCode.UNINITIALIZED_PASSWORD);
+
+    }
+
+    @Override
+    public void cancellation(String password) {
+
+        AuthUser tokenUser = UserContext.getCurrentUser();
+        if (tokenUser == null) {
+            throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+        }
+        Member member = this.getById(tokenUser.getId());
+        if (member.getPassword().equals(new BCryptPasswordEncoder().encode(password))) {
+            //删除联合登录
+            connectService.deleteByMemberId(member.getId());
+            //混淆用户信息
+            this.confusionMember(member);
+        }
+    }
+
+    /**
+     * 混淆之前的会员信息
+     *
+     * @param member
+     */
+    private void confusionMember(Member member) {
+        member.setUsername(UuidUtils.getUUID());
+        member.setMobile(UuidUtils.getUUID() + member.getMobile());
+        member.setNickName("用户已注销");
+        member.setDisabled(false);
+        this.updateById(member);
+    }
+
+    @Override
     public Token register(String userName, String password, String mobilePhone) {
         //检测会员信息
         checkMember(userName, mobilePhone);
@@ -342,11 +404,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 
     @Override
     public Member updateMember(ManagerMemberEditDTO managerMemberEditDTO) {
-        //判断是否用户登录并且会员ID为当前登录会员ID
-        AuthUser tokenUser = UserContext.getCurrentUser();
-        if (tokenUser == null) {
-            throw new ServiceException(ResultCode.USER_NOT_LOGIN);
-        }
         //过滤会员昵称敏感词
         if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(managerMemberEditDTO.getNickName())) {
             managerMemberEditDTO.setNickName(SensitiveWordsFilter.filter(managerMemberEditDTO.getNickName()));
@@ -356,7 +413,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
             managerMemberEditDTO.setPassword(new BCryptPasswordEncoder().encode(managerMemberEditDTO.getPassword()));
         }
         //查询会员信息
-        Member member = this.findByUsername(managerMemberEditDTO.getUsername());
+        Member member = this.getById(managerMemberEditDTO.getId());
         //传递修改会员信息
         BeanUtil.copyProperties(managerMemberEditDTO, member);
         this.updateById(member);
