@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 
 /**
  * 发票
@@ -25,6 +28,10 @@ public class Receipt extends BaseEntity {
 
     @ApiModelProperty(value = "发票抬头")
     private String receiptTitle;
+
+    @ApiModelProperty(value = "公司名称  如果是个人则是个人名称")
+    private String companyName;
+
 
     @ApiModelProperty(value = "纳税人识别号")
     private String taxpayerId;
@@ -52,5 +59,44 @@ public class Receipt extends BaseEntity {
 
     @ApiModelProperty(value = "发票详情")
     private String receiptDetail;
+
+    /**
+     * @see cn.lili.modules.order.order.entity.enums.ReceiptTypeEnum
+     */
+    @ApiModelProperty(value = "发票类型")
+    private String receiptType;
+
+    @ApiModelProperty(value = "注册地址")
+    private String registerAddress;
+
+    @ApiModelProperty(value = "注册电话")
+    private String registerMobile;
+
+    @ApiModelProperty(value = "开户银行")
+    private String bankName;
+
+    @ApiModelProperty(value = "银行账户")
+    private String bankAccount;
+
+    @ApiModelProperty(value = "收票人姓名")
+    private String receiverReceiptName;
+
+    @ApiModelProperty(value = "收票人邮箱")
+    private String receiverReceiptEmail;
+
+    @ApiModelProperty(value = "收票人电话")
+    private String receiverReceiptMobile;
+
+    @NotBlank(message = "收票人地址不能为空")
+    @ApiModelProperty(value = "地址名称， '，'分割")
+    private String receiverReceiptAddressPath;
+
+    @NotBlank(message = "收票人地址不能为空")
+    @ApiModelProperty(value = "地址id，'，'分割 ")
+    private String receiverReceiptAddressIdPath;
+
+    @ApiModelProperty(value = "收票人详细地址")
+    private String receiverReceiptAddress;
+
 
 }

@@ -483,8 +483,11 @@ public enum CachePrefix {
     /**
      * 敏感词
      */
-    SENSITIVE;
-
+    SENSITIVE,
+    /**
+     * 发票
+     */
+    RECEIPT;
 
     public static String removePrefix(String str) {
         return str.substring(str.lastIndexOf("}_") + 2);

@@ -33,6 +33,8 @@ public enum SettingEnum {
     SECKILL_SETTING,
     //IM 配置
     IM_SETTING,
+    //发票设置
+    RECEIPT_SETTING,
 
     //微信 联合登陆设置
     WECHAT_CONNECT,

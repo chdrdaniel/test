@@ -45,6 +45,7 @@ public class SettingManagerController {
             allowableValues = "BASE_SETTING,EMAIL_SETTING,GOODS_SETTING,KUAIDI_SETTING,ORDER_SETTING,OSS_SETTING,POINT_SETTING," +
                     "WECHAT_PC_CONNECT,WECHAT_WAP_CONNECT,WECHAT_APP_CONNECT,WECHAT_MP_CONNECT," +
                     "QQ_WEB_CONNECT,QQ_APP_CONNECT," +
+                    "RECEIPT_SETTING" +
                     "QQ_WEB_CONNECT,QQ_APP_CONNECT,WEIBO_CONNECT,ALIPAY_CONNECT," +
                     "PAYMENT_SUPPORT,ALIPAY_PAYMENT,WECHAT_PAYMENT,SECKILL_SETTING,EXPERIENCE_SETTING,IM")
     public ResultMessage saveConfig(@PathVariable String key, @RequestBody String configValue) {
@@ -77,7 +78,6 @@ public class SettingManagerController {
     public ResultMessage settingGet(@PathVariable String key) {
         return createSetting(key);
     }
-
 
 
     /**
@@ -189,6 +189,11 @@ public class SettingManagerController {
                 return setting == null ?
                         ResultUtil.data(new HotWordsSetting()) :
                         ResultUtil.data(JSONUtil.toBean(setting.getSettingValue(), HotWordsSetting.class));
+            case RECEIPT_SETTING:
+                return setting == null ?
+                        ResultUtil.data(new ReceiptSetting()) :
+                        ResultUtil.data(JSONUtil.toBean(setting.getSettingValue(), ReceiptSetting.class));
+
             default:
                 throw new ServiceException(ResultCode.SETTING_NOT_TO_SET);
         }

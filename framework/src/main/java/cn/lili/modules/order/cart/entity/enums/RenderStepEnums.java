@@ -17,7 +17,8 @@ public enum RenderStepEnums {
     DISTRIBUTION("分配需要分配的促销金额"),
     PLATFORM_COMMISSION("平台佣金"),
     CART_PRICE("购物车金额计算"),
-    CART_SN("交易编号创建");
+    CART_SN("交易编号创建"),
+    RECEIPT_TYPE("发票类型筛选");
 
     private String distribution;
 

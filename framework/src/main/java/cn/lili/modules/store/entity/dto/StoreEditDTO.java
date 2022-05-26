@@ -185,4 +185,10 @@ public class StoreEditDTO {
     @ApiModelProperty(value = "腾讯云智服小程序唯一标识")
     private String yzfMpSign;
 
+    /**
+     * @see cn.lili.modules.store.entity.enums.ReceiptSourceEnum
+     */
+    @ApiModelProperty(value = "发票来源")
+    private String receiptSource;
+
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import cn.lili.modules.store.entity.dos.Store;
 import cn.lili.modules.store.entity.dos.StoreDetail;
 import cn.lili.modules.store.entity.dto.StoreAfterSaleAddressDTO;
+import cn.lili.modules.store.entity.dto.StoreReceiptSettingDTO;
 import cn.lili.modules.store.entity.dto.StoreSettingDTO;
 import cn.lili.modules.store.entity.dto.StoreSettlementDay;
 import cn.lili.modules.store.entity.vos.StoreBasicInfoVO;
@@ -86,6 +87,14 @@ public interface StoreDetailService extends IService<StoreDetail> {
     boolean editStoreAfterSaleAddressDTO(StoreAfterSaleAddressDTO storeAfterSaleAddressDTO);
 
     /**
+     * 修改当前登录店铺发票设置
+     *
+     * @param storeReceiptSettingDTO 发票设置
+     * @return 店铺售后收件地址
+     */
+    boolean editStoreReceiptSetting(StoreReceiptSettingDTO storeReceiptSettingDTO);
+
+    /**
      * 修改店铺库存预警数量
      *
      * @param stockWarning 库存预警数量
@@ -138,4 +147,12 @@ public interface StoreDetailService extends IService<StoreDetail> {
      * @param dateTime 结算日
      */
     void updateSettlementDay(String storeId, DateTime dateTime);
+
+    /**
+     * 根据店铺ids批量获取店铺信息
+     *
+     * @param storeIds 店铺id集合
+     * @return
+     */
+    List<StoreDetail> getDetailList(List<String> storeIds);
 }

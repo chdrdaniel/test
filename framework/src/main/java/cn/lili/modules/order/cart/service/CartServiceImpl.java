@@ -4,6 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.lili.cache.Cache;
+import cn.lili.cache.CachePrefix;
 import cn.lili.common.enums.PromotionTypeEnum;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.exception.ServiceException;
@@ -442,6 +443,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void shippingReceipt(ReceiptVO receiptVO, String way) {
+        //将发票信息放入缓存 下次使用
+        cache.put(CachePrefix.RECEIPT.getPrefix() + UserContext.getCurrentUser().getId(), receiptVO);
         CartTypeEnum cartTypeEnum = CartTypeEnum.CART;
         if (CharSequenceUtil.isNotEmpty(way)) {
             cartTypeEnum = CartTypeEnum.valueOf(way);

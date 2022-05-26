@@ -30,12 +30,12 @@ public class MemberReceiptAddVO {
     private String receiptContent;
 
     /**
-     * @see cn.lili.modules.member.entity.enums.MemberReceiptEnum
+     * @see cn.lili.modules.order.order.entity.enums.ReceiptTypeEnum
      */
     @ApiModelProperty(value = "发票类型")
     private String receiptType;
 
-    @ApiModelProperty(value = "是否为默认选项 0：否，1：是")
-    private Integer isDefault;
+    @ApiModelProperty(value = "是否为默认选项")
+    private Boolean isDefault;
 
 }

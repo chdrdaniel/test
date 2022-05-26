@@ -19,7 +19,8 @@ public class RenderStepStatement {
             RenderStepEnums.CHECK_DATA,
             RenderStepEnums.SKU_PROMOTION,
             RenderStepEnums.FULL_DISCOUNT,
-            RenderStepEnums.CART_PRICE};
+            RenderStepEnums.CART_PRICE,
+            RenderStepEnums.RECEIPT_TYPE};
 
     /**
      * 结算页渲染
@@ -34,6 +35,7 @@ public class RenderStepStatement {
             RenderStepEnums.COUPON,
             RenderStepEnums.SKU_FREIGHT,
             RenderStepEnums.CART_PRICE,
+            RenderStepEnums.RECEIPT_TYPE,
     };
 
 
@@ -46,7 +48,8 @@ public class RenderStepStatement {
             RenderStepEnums.SKU_PROMOTION,
             RenderStepEnums.COUPON,
             RenderStepEnums.SKU_FREIGHT,
-            RenderStepEnums.CART_PRICE
+            RenderStepEnums.CART_PRICE,
+            RenderStepEnums.RECEIPT_TYPE,
     };
 
     /**
@@ -75,7 +78,8 @@ public class RenderStepStatement {
             RenderStepEnums.CART_PRICE,
             RenderStepEnums.CART_SN,
             RenderStepEnums.DISTRIBUTION,
-            RenderStepEnums.PLATFORM_COMMISSION
+            RenderStepEnums.PLATFORM_COMMISSION,
+            RenderStepEnums.RECEIPT_TYPE,
     };
 
     /**

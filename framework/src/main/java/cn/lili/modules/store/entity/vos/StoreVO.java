@@ -19,4 +19,21 @@ public class StoreVO extends Store {
     @ApiModelProperty(value = "登录用户的昵称")
     private String nickName;
 
+    @ApiModelProperty(value = "电子发票状态")
+    private String electronicStatus;
+
+    @ApiModelProperty(value = "增值税专用发票状态")
+    private String vatSpecialStatus;
+
+    @ApiModelProperty(value = "增值税普通发票状态")
+    private String vatStatus;
+
+    /**
+     * @see cn.lili.modules.store.entity.enums.ReceiptSourceEnum
+     */
+    @ApiModelProperty(value = "发票来源")
+    private String receiptSource;
+
+
+
 }

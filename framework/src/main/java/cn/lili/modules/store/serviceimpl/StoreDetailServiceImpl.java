@@ -3,6 +3,7 @@ package cn.lili.modules.store.serviceimpl;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
+import cn.lili.common.enums.SwitchEnum;
 import cn.lili.common.properties.RocketmqCustomProperties;
 import cn.lili.common.security.AuthUser;
 import cn.lili.common.security.context.UserContext;
@@ -14,6 +15,7 @@ import cn.lili.modules.search.utils.EsIndexUtil;
 import cn.lili.modules.store.entity.dos.Store;
 import cn.lili.modules.store.entity.dos.StoreDetail;
 import cn.lili.modules.store.entity.dto.StoreAfterSaleAddressDTO;
+import cn.lili.modules.store.entity.dto.StoreReceiptSettingDTO;
 import cn.lili.modules.store.entity.dto.StoreSettingDTO;
 import cn.lili.modules.store.entity.dto.StoreSettlementDay;
 import cn.lili.modules.store.entity.vos.StoreBasicInfoVO;
@@ -26,6 +28,7 @@ import cn.lili.modules.store.service.StoreService;
 import cn.lili.rocketmq.RocketmqSendCallbackBuilder;
 import cn.lili.rocketmq.tags.GoodsTagsEnum;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -171,6 +174,17 @@ public class StoreDetailServiceImpl extends ServiceImpl<StoreDetailMapper, Store
     }
 
     @Override
+    public boolean editStoreReceiptSetting(StoreReceiptSettingDTO storeReceiptSettingDTO) {
+        String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
+        LambdaUpdateWrapper<StoreDetail> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
+        lambdaUpdateWrapper.set(StoreDetail::getElectronicStatus, SwitchEnum.valueOf(storeReceiptSettingDTO.getElectronicStatus()));
+        lambdaUpdateWrapper.set(StoreDetail::getVatStatus, SwitchEnum.valueOf(storeReceiptSettingDTO.getVatStatus()));
+        lambdaUpdateWrapper.set(StoreDetail::getVatSpecialStatus, SwitchEnum.valueOf(storeReceiptSettingDTO.getVatSpecialStatus()));
+        lambdaUpdateWrapper.eq(StoreDetail::getStoreId, storeId);
+        return this.update(lambdaUpdateWrapper);
+    }
+
+    @Override
     public boolean updateStockWarning(Integer stockWarning) {
         String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
         LambdaUpdateWrapper<StoreDetail> lambdaUpdateWrapper = Wrappers.lambdaUpdate();
@@ -206,4 +220,9 @@ public class StoreDetailServiceImpl extends ServiceImpl<StoreDetailMapper, Store
         return this.baseMapper.getLicencePhoto(storeId);
     }
 
+    @Override
+    public List<StoreDetail> getDetailList(List<String> storeIds) {
+        return this.baseMapper.selectList(new QueryWrapper<StoreDetail>()
+                .in("store_id", storeIds));
+    }
 }

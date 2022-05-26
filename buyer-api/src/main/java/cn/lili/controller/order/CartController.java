@@ -17,8 +17,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +34,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Api(tags = "买家端，购物车接口")
 @RequestMapping("/buyer/trade/carts")
+@Validated
 public class CartController {
 
     /**
@@ -218,7 +221,7 @@ public class CartController {
             @ApiImplicitParam(name = "way", value = "购物车购买：CART/立即购买：BUY_NOW/拼团购买：PINTUAN / 积分购买：POINT ", required = true, paramType = "query"),
     })
     @GetMapping("/select/receipt")
-    public ResultMessage<Object> selectReceipt(String way, ReceiptVO receiptVO) {
+    public ResultMessage<Object> selectReceipt(String way,@Valid ReceiptVO receiptVO) {
         this.cartService.shippingReceipt(receiptVO, way);
         return ResultUtil.success();
     }

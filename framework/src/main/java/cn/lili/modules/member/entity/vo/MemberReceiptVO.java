@@ -27,7 +27,7 @@ public class MemberReceiptVO {
     private String memberName;
 
     /**
-     * @see cn.lili.modules.member.entity.enums.MemberReceiptEnum
+     * @see cn.lili.modules.order.order.entity.enums.ReceiptTypeEnum
      */
     @ApiModelProperty(value = "发票类型")
     private String receiptType;
@@ -47,7 +47,7 @@ public class MemberReceiptVO {
         if (StringUtils.isNotEmpty(receiptType)) {
             queryWrapper.eq(MemberReceipt::getReceiptType, receiptType);
         }
-        queryWrapper.eq(MemberReceipt::getDeleteFlag, true);
+        queryWrapper.eq(MemberReceipt::getDeleteFlag, false);
         queryWrapper.orderByDesc(MemberReceipt::getCreateTime);
         return queryWrapper;
     }

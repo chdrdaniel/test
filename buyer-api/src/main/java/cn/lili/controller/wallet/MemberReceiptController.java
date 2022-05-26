@@ -11,9 +11,11 @@ import cn.lili.modules.member.entity.vo.MemberReceiptVO;
 import cn.lili.modules.member.service.MemberReceiptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 
 
 /**
@@ -33,6 +35,7 @@ public class MemberReceiptController {
     @ApiOperation(value = "查询会员发票列表")
     @GetMapping
     public ResultMessage<Object> page(MemberReceiptVO memberReceiptVO, PageVO page) {
+        memberReceiptVO.setMemberId(UserContext.getCurrentUser().getId());
         return ResultUtil.data(memberReceiptService.getPage(memberReceiptVO, page));
     }
 
@@ -57,5 +60,16 @@ public class MemberReceiptController {
     public ResultMessage<Boolean> deleteMessage(@PathVariable String id) {
         return ResultUtil.data(memberReceiptService.deleteMemberReceipt(id));
     }
+
+
+    @ApiOperation(value = "查询发票集合")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", value = "发票类型", required = true, dataType = "String", paramType = "path"),
+    })
+    @GetMapping("/{type}/list")
+    public ResultMessage<Object> receiptList(@PathVariable String type) {
+        return ResultUtil.data(memberReceiptService.getMemberReceipt(type, UserContext.getCurrentUser().getId()));
+    }
+
 
 }

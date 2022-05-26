@@ -11,6 +11,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -25,6 +26,9 @@ import java.util.Date;
 public class MemberReceipt extends BaseIdEntity {
 
     private static final long serialVersionUID = -8210927482915675995L;
+
+    @ApiModelProperty(value = "公司名称  如果是个人则是个人名称")
+    private String companyName;
 
     @ApiModelProperty(value = "发票抬头")
     private String receiptTitle;
@@ -42,13 +46,46 @@ public class MemberReceipt extends BaseIdEntity {
     private String memberName;
 
     /**
-     * @see cn.lili.modules.member.entity.enums.MemberReceiptEnum
+     * @see cn.lili.modules.order.order.entity.enums.ReceiptTypeEnum
      */
     @ApiModelProperty(value = "发票类型")
     private String receiptType;
 
+    @ApiModelProperty(value = "注册地址")
+    private String registerAddress;
+
+    @ApiModelProperty(value = "注册电话")
+    private String registerMobile;
+
+    @ApiModelProperty(value = "开户银行")
+    private String bankName;
+
+    @ApiModelProperty(value = "银行账户")
+    private String bankAccount;
+
+    @ApiModelProperty(value = "收票人姓名")
+    private String receiverReceiptName;
+
+    @ApiModelProperty(value = "收票人邮箱")
+    private String receiverReceiptEmail;
+
+    @ApiModelProperty(value = "收票人电话")
+    private String receiverReceiptMobile;
+
+    @NotBlank(message = "收票人地址不能为空")
+    @ApiModelProperty(value = "地址名称， '，'分割")
+    private String receiverReceiptAddressPath;
+
+    @NotBlank(message = "收票人地址不能为空")
+    @ApiModelProperty(value = "地址id，'，'分割 ")
+    private String receiverReceiptAddressIdPath;
+
+    @ApiModelProperty(value = "收票人详细地址")
+    private String receiverReceiptAddress;
+
+
     @ApiModelProperty(value = "是否为默认选项 0：否，1：是")
-    private Integer isDefault;
+    private Boolean isDefault;
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "删除标志 true/false 删除/未删除", hidden = true)

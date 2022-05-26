@@ -5,8 +5,11 @@ import cn.lili.common.vo.PageVO;
 import cn.lili.modules.member.entity.dos.MemberReceipt;
 import cn.lili.modules.member.entity.vo.MemberReceiptAddVO;
 import cn.lili.modules.member.entity.vo.MemberReceiptVO;
+import cn.lili.modules.order.order.entity.vo.ReceiptVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 
 /**
@@ -51,5 +54,21 @@ public interface MemberReceiptService extends IService<MemberReceipt> {
      * @return 操作状态
      */
     Boolean deleteMemberReceipt(String id);
+
+    /**
+     * 根据纳税人识别号和发票类型查询会员发票
+     *
+     * @param receiptType 发票类型
+     * @return
+     */
+    List<MemberReceipt> getMemberReceipt(String receiptType, String memberId);
+
+    /**
+     * 添加会员发票
+     *
+     * @param memberReceipt 发票信息
+     * @return
+     */
+    Boolean add(MemberReceipt memberReceipt);
 
 }

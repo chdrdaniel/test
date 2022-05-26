@@ -56,6 +56,9 @@ public class TradeDTO implements Serializable {
     @ApiModelProperty(value = "是否需要发票")
     private Boolean needReceipt;
 
+    @ApiModelProperty(value = "可用的发票类型")
+    private List<String> receiptType;
+
 
     @ApiModelProperty(value = "不支持配送方式")
     private List<CartSkuVO> notSupportFreight;
