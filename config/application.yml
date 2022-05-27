@@ -29,7 +29,7 @@ spring:
     type: redis
   # Redis
   redis:
-    host: 192.168.0.116
+    host: 101.43.251.145
     port: 6379
     password: lilishop
     lettuce:
@@ -60,7 +60,7 @@ spring:
       default-datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://192.168.0.116:3306/lilishop?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://101.43.251.145:3306/lilishop?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
         username: root
         password: lilishop
         maxActive: 50
@@ -140,6 +140,8 @@ ignored:
     - /manager/passport/user/refresh/**
     - /manager/other/elasticsearch
     - /manager/other/customWords
+    - /manager/wechat/wxPortal/**
+    - /manager/wechat/wxMenu/**
     - /druid/**
     - /swagger-ui.html
     - /doc.html
@@ -221,12 +223,12 @@ lili:
     #支付密码
     WALLET_PASSWORD: SMS_205755301
   system:
-    isDemoSite: false
+    isDemoSite: true
     isTestModel: true
-  #     脱敏级别：
-  #     0：不做脱敏处理
-  #     1：管理端用户手机号等信息脱敏
-  #     2：商家端信息脱敏（为2时，表示管理端，商家端同时脱敏）
+    #     脱敏级别：
+    #     0：不做脱敏处理
+    #     1：管理端用户手机号等信息脱敏
+    #     2：商家端信息脱敏（为2时，表示管理端，商家端同时脱敏）
     sensitiveLevel: 1
 
   statistics:
@@ -268,7 +270,7 @@ lili:
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: 192.168.0.116:9200
+      cluster-nodes: 101.43.251.145:9200
       index:
         number-of-replicas: 0
         number-of-shards: 3
@@ -300,7 +302,7 @@ lili:
       after-sale-topic: lili_after_sale_topic
       after-sale-group: lili_after_sale_group
 rocketmq:
-  name-server: 192.168.0.116:9876
+  name-server: 101.43.251.145:9876
   isVIPChannel: false
   producer:
     group: lili_group
@@ -317,3 +319,9 @@ xxl:
       port: 8891
       logpath: ./xxl-job/executor
       logretentiondays: 7
+wx:
+  mp:
+    appId: wxc7ecddc1777a744a
+    secret: 614118281e96dd07abe4d8284581278d
+    token: itzhishi
+    aesKey:
