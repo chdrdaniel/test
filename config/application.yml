@@ -142,6 +142,7 @@ ignored:
     - /manager/other/customWords
     - /manager/wechat/wxPortal/**
     - /manager/wechat/wxMenu/**
+    - /manager/wechat/wxSubscribe/**
     - /druid/**
     - /swagger-ui.html
     - /doc.html

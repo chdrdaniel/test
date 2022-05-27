@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: ftyy
@@ -58,21 +59,19 @@ public class WxMenuServiceImpl extends ServiceImpl<WxMenuMapper, WechatMenu> imp
             WxMpGetSelfMenuInfoResult selfMenuInfo = this.wxService.switchoverTo(appId).getMenuService().getSelfMenuInfo();
             //数据不为空
             if (selfMenuInfo != null && selfMenuInfo.getSelfMenuInfo() != null) {
-                this.recursionWxMenu(selfMenuInfo.getSelfMenuInfo().getButtons(),"0");
+                this.recursionWxMenu(selfMenuInfo.getSelfMenuInfo().getButtons(), "0");
             }
         } catch (WxErrorException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void saveWxMenu(WechatMenu wxMenu) {
-        //新增微信公众号菜单
-        this.save(wxMenu);
-        //获取菜单
-        List<WechatMenu> list = this.list();
-    }
-
+    /**
+     * 初始化添加微信菜单
+     *
+     * @param wxMpSelfMenuButton
+     * @param parentId
+     */
     public void recursionWxMenu(List<WxMpSelfMenuInfo.WxMpSelfMenuButton> wxMpSelfMenuButton, String parentId) {
 
         if (!wxMpSelfMenuButton.isEmpty() && wxMpSelfMenuButton.size() > 0) {
@@ -82,7 +81,7 @@ public class WxMenuServiceImpl extends ServiceImpl<WxMenuMapper, WechatMenu> imp
                 WechatMenu wxMenu = new WechatMenu(a);
                 //父级菜单id
                 wxMenu.setParentId(parentId);
-                wxMenu.setType( WxMenuTypeEnums.wxMenuNameOf(a.getType()));
+                wxMenu.setType(WxMenuTypeEnums.wxMenuNameOf(a.getType()));
                 this.save(wxMenu);
                 //子级菜单不为空
                 if (a.getSubButtons() != null && !a.getSubButtons().getSubButtons().isEmpty() && a.getSubButtons().getSubButtons().size() > 0) {
@@ -92,82 +91,154 @@ public class WxMenuServiceImpl extends ServiceImpl<WxMenuMapper, WechatMenu> imp
         }
     }
 
+    @Override
+    public void saveWxMenu(WechatMenu wechatMenu) {
+        //新增微信公众号菜单
+        this.save(wechatMenu);
+        //更新微信菜单
+        this.wxMenuTree();
+    }
 
-    private WxMenu wxMenuTree(List<WechatMenu> menus) {
-        if(menus.isEmpty() && menus.size()>0){
+    @Override
+    public void updateWechatMenu(WechatMenu wxMenu) {
+        //修改微信公众号菜单
+        this.updateById(wxMenu);
+        //更新微信菜单
+        this.wxMenuTree();
+    }
+
+    @Override
+    public void delAllByIds(String id) {
+        //删除微信公众号菜单
+        this.removeById(id);
+        //更新微信菜单
+        this.wxMenuTree();
+    }
+
+    /**
+     * 拼接微信菜单及更新
+     *
+     * @return
+     */
+    private void wxMenuTree() {
+        //获取菜单
+        List<WechatMenu> menus = this.list();
+        //菜单列表不为空
+        if (menus.isEmpty() && menus.size() > 0) {
+            WxMenu menu = new WxMenu();
+            //遍历菜单列表
             for (WechatMenu wxMenu : menus) {
                 //获取一级菜单
-                if(wxMenu.getParentId().equals("0")){
+                if (wxMenu.getParentId().equals("0")) {
+                    //获取菜单按钮类型
                     WxMenuButton wxMenuButton = getWxMenuButton(wxMenu);
-                    //按钮不为空 且是父级按钮
-                    if(wxMenuButton!=null){
-
+                    //按钮不为空
+                    if (wxMenuButton != null) {
+                        //获取子级及下级按钮菜单
+                        wxMenuInitChild(menus, wxMenuButton, wxMenu);
                     }
+                    //添加微信菜单
+                    menu.getButtons().add(wxMenuButton);
                 }
             }
+            //添加微信菜单
+            Optional.ofNullable(menu).ifPresent(a -> {
+                try {
+                    //微信自定义菜单删除
+                    this.wxService.switchoverTo(appId).getMenuService().menuDelete();
+                    this.wxService.switchover(appId);
+                    //微信自定义菜单增加
+                    this.wxService.getMenuService().menuCreate(menu);
+                } catch (WxErrorException e) {
+                    e.printStackTrace();
+                }
+            });
         }
-
-        return null;
     }
 
 
+    /**
+     * 拼接微信子级菜单
+     *
+     * @param menus
+     * @param wxMenuButton
+     * @param wxMenu
+     */
+    public void wxMenuInitChild(List<WechatMenu> menus, WxMenuButton wxMenuButton, WechatMenu wxMenu) {
+        //获取子级菜单列表
+        menus.stream().filter(menu -> menu.getParentId().equals(wxMenu.getId())).forEach(childMenu -> {
+            //获取菜单按钮类型
+            WxMenuButton menuButton = getWxMenuButton(childMenu);
+            //添加子级按钮菜单
+            wxMenuButton.getSubButtons().add(menuButton);
+            //获取子级菜单
+            wxMenuInitChild(menus, menuButton, childMenu);
+        });
 
-    public WxMenuButton getWxMenuButton(WechatMenu wxMenu){
+    }
+
+
+    /**
+     * 微信按钮类型
+     * @param wxMenu
+     * @return
+     */
+    public WxMenuButton getWxMenuButton(WechatMenu wxMenu) {
         WxMenuButton button = new WxMenuButton();
         button.setName(wxMenu.getName());
         button.setKey(wxMenu.getWxKey());
-        switch (wxMenu.getType()){
+        switch (wxMenu.getType()) {
             //点击按钮
-            case WX_MENU_CLICK:{
+            case WX_MENU_CLICK: {
                 button.setType(WxMenuTypeEnums.WX_MENU_CLICK.description());
                 return button;
             }
             //微信扫一扫按钮
-            case WX_MENU_SCANCODE_PUSH:{
+            case WX_MENU_SCANCODE_PUSH: {
                 button.setType(WxMenuTypeEnums.WX_MENU_SCANCODE_PUSH.description());
                 return button;
             }
             //扫码推事件且弹出
-            case WX_MENU_SCANCODE_WAITMSG:{
+            case WX_MENU_SCANCODE_WAITMSG: {
                 button.setType(WxMenuTypeEnums.WX_MENU_SCANCODE_WAITMSG.description());
                 return button;
             }
             //弹出系统拍照发图用户点击按钮
-            case WX_MENU_PIC_SYSPHOTO:{
+            case WX_MENU_PIC_SYSPHOTO: {
                 button.setType(WxMenuTypeEnums.WX_MENU_PIC_SYSPHOTO.description());
                 return button;
             }
             //弹出微信相册发图器用户点击按钮后
-            case WX_MENU_PIC_PHOTO_OR_ALBUM:{
+            case WX_MENU_PIC_PHOTO_OR_ALBUM: {
                 button.setType(WxMenuTypeEnums.WX_MENU_PIC_PHOTO_OR_ALBUM.description());
                 return button;
             }
             //扫码推事件且弹出
-            case WX_MENU_PIC_WEIXIN:{
+            case WX_MENU_PIC_WEIXIN: {
                 button.setType(WxMenuTypeEnums.WX_MENU_PIC_WEIXIN.description());
                 return button;
             }
             //弹出地理位置选择器用户点击按钮后
-            case WX_MENU_LOCATION_SELECT:{
+            case WX_MENU_LOCATION_SELECT: {
                 button.setType(WxMenuTypeEnums.WX_MENU_LOCATION_SELECT.description());
                 return button;
             }
             //下发消息（除文本消息）用户点击media_id类型按钮
-            case WX_MENU_MEDIA_ID:{
+            case WX_MENU_MEDIA_ID: {
                 button.setType(WxMenuTypeEnums.WX_MENU_MEDIA_ID.description());
                 return button;
             }
             //用户点击 article_id 类型按钮后，微信客户端将会以卡片形式，下发开发者在按钮中填写的图文消息
-            case WX_MENU_ARTICLE_ID:{
+            case WX_MENU_ARTICLE_ID: {
                 button.setType(WxMenuTypeEnums.WX_MENU_ARTICLE_ID.description());
                 return button;
             }
             //类似 view_limited，但不使用 media_id 而使用 article_id
-            case WX_MENU_ARTICLE_VIEW_LIMITED:{
+            case WX_MENU_ARTICLE_VIEW_LIMITED: {
                 button.setType(WxMenuTypeEnums.WX_MENU_ARTICLE_VIEW_LIMITED.description());
                 return button;
             }
-            default:{
+            default: {
                 return null;
             }
         }

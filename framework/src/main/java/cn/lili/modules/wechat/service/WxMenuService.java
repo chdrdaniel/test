@@ -28,4 +28,16 @@ public interface WxMenuService extends IService<WechatMenu> {
      * @param wxMenu
      */
     void saveWxMenu(WechatMenu wxMenu);
+
+    /**
+     * 修改微信公众号菜单
+     * @param wxMenu
+     */
+    void updateWechatMenu(WechatMenu wxMenu);
+
+    /**
+     * 删除微信公众号菜单
+     * @param id
+     */
+    void delAllByIds(String id);
 }

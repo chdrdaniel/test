@@ -6,13 +6,13 @@ import cn.lili.modules.wechat.entity.dos.WechatMenu;
 import cn.lili.modules.wechat.entity.vo.WechatMenuVO;
 import cn.lili.modules.wechat.service.WxMenuService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -46,9 +46,23 @@ public class WxMenuController {
     @PostMapping
     @ApiOperation(value = "新增微信公众号菜单")
     public ResultMessage<WechatMenu> save(WechatMenu wxMenu) {
-
         wxMenuService.saveWxMenu(wxMenu);
         return ResultUtil.data(wxMenu);
+    }
+
+    @PutMapping
+    @ApiOperation(value = "修改微信公众号菜单")
+    public ResultMessage<WechatMenu> updateWechatMenu(@Valid WechatMenu wxMenu) {
+        wxMenuService.updateWechatMenu(wxMenu);
+        return ResultUtil.data(wxMenu);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @ApiImplicitParam(name = "id", value = "公众号菜单id", required = true, paramType = "path", dataType = "String")
+    @ApiOperation(value = "通过微信公众号菜单")
+    public ResultMessage<WechatMenu> delAllByIds(@NotNull @PathVariable String id) {
+        wxMenuService.delAllByIds(id);
+        return ResultUtil.success();
     }
 
 
