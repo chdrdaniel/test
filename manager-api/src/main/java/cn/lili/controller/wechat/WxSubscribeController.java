@@ -22,8 +22,6 @@ public class WxSubscribeController {
     @Autowired
     private WxSubscribeService wxSubscribeService;
 
-
-
     @GetMapping(value = "/init")
     @ApiOperation(value = "初始化关注微信公众号用户")
     public ResultMessage init() {

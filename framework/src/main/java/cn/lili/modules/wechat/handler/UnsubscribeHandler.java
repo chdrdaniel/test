@@ -28,6 +28,9 @@ public class UnsubscribeHandler implements WxMpMessageHandler {
     @Autowired
     private WxSubscribeService wxSubscribeService;
 
+    @Autowired
+    private TextBuilder textBuilder;
+
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService wxMpService,
@@ -35,9 +38,9 @@ public class UnsubscribeHandler implements WxMpMessageHandler {
         String openId = wxMessage.getFromUser();
         log.info("取消关注用户 OPENID: " + openId);
         //更新数据库为取消关注
-        wxSubscribeService.update(new LambdaUpdateWrapper<WxSubscribe>().eq(WxSubscribe::getOpenId,openId).set(WxSubscribe::getSubscribeStatus,SubscribeStatusEnums.CANCEL_SUBSCRIBE.name()));
+        wxSubscribeService.update(new LambdaUpdateWrapper<WxSubscribe>().eq(WxSubscribe::getId,openId).set(WxSubscribe::getSubscribeStatus,SubscribeStatusEnums.CANCEL_SUBSCRIBE.name()));
 
-        return new TextBuilder().build("感谢陪伴", wxMessage, wxMpService);
+        return textBuilder.build("感谢陪伴", wxMessage, wxMpService);
     }
 
 }

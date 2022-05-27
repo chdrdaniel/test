@@ -4,11 +4,13 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
+import org.springframework.stereotype.Component;
 
 /**
  * 微信文字消息回复
  * @author lenovo
  */
+@Component
 public class TextBuilder extends AbstractBuilder {
 
     @Override
