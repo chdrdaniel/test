@@ -162,6 +162,19 @@ public class Swagger2Config {
     }
 
     @Bean
+    public Docket walletRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("账户")
+                .apiInfo(apiInfo()).select()
+                //扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.basePackage("cn.lili.controller.wallet"))
+                .paths(PathSelectors.any())
+                .build()
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+    }
+
+    @Bean
     public Docket otherRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("其他")

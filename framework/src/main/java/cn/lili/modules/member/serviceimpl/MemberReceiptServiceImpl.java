@@ -132,7 +132,9 @@ public class MemberReceiptServiceImpl extends ServiceImpl<MemberReceiptMapper, M
     public List<MemberReceipt> getMemberReceipt(String receiptType, String memberId) {
         return this.baseMapper.selectList(new QueryWrapper<MemberReceipt>()
                 .eq("member_id", memberId)
-                .eq("receipt_type", receiptType));
+                .eq("receipt_type", receiptType)
+                .eq("delete_flag", false)
+                .orderByDesc("create_time"));
     }
 
     @Override
@@ -147,7 +149,7 @@ public class MemberReceiptServiceImpl extends ServiceImpl<MemberReceiptMapper, M
             if (memberReceipt.getIsDefault()) {
                 //将此会员所有的发票置为非默认
                 LambdaUpdateWrapper<MemberReceipt> updateWrapper = Wrappers.lambdaUpdate();
-                updateWrapper.set(MemberReceipt::getDeleteFlag, false);
+                updateWrapper.set(MemberReceipt::getIsDefault, false);
                 updateWrapper.eq(MemberReceipt::getMemberId, memberReceipt.getMemberId());
                 updateWrapper.eq(MemberReceipt::getReceiptType, memberReceipt.getReceiptType());
                 this.update(updateWrapper);

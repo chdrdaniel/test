@@ -56,7 +56,7 @@ public class MemberReceiptController {
 
     @ApiOperation(value = "会员发票删除")
     @ApiImplicitParam(name = "id", value = "会员发票id", required = true, paramType = "path")
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResultMessage<Boolean> deleteMessage(@PathVariable String id) {
         return ResultUtil.data(memberReceiptService.deleteMemberReceipt(id));
     }
