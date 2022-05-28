@@ -3,9 +3,12 @@ package cn.lili.modules.wechat.serviceimpl;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.lili.common.utils.BeanUtil;
 import cn.lili.modules.wechat.entity.dos.WxSubscribe;
+import cn.lili.modules.wechat.entity.dto.WxSubscribeParams;
 import cn.lili.modules.wechat.entity.enums.SubscribeStatusEnums;
 import cn.lili.modules.wechat.mapper.WxSubscribeMapper;
 import cn.lili.modules.wechat.service.WxSubscribeService;
+import cn.lili.mybatis.util.PageUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -16,10 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author: ftyy
@@ -45,6 +46,11 @@ public class WxSubscribeServiceImpl extends ServiceImpl<WxSubscribeMapper, WxSub
         ThreadUtil.execAsync(()->{
             this.recursionWxSubscribe(null,collect);
         });
+    }
+
+    @Override
+    public IPage<WxSubscribe> getByPage(WxSubscribeParams wxSubscribeParams) {
+        return this.page(PageUtil.initPage(wxSubscribeParams),wxSubscribeParams.queryWrapper());
     }
 
     /**
