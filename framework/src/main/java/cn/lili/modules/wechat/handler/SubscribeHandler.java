@@ -1,6 +1,12 @@
 package cn.lili.modules.wechat.handler;
 
+import cn.hutool.json.JSONUtil;
+import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.utils.BeanUtil;
+import cn.lili.modules.system.entity.dos.Setting;
+import cn.lili.modules.system.entity.dto.WechatPublicSetting;
+import cn.lili.modules.system.entity.enums.SettingEnum;
+import cn.lili.modules.system.service.SettingService;
 import cn.lili.modules.wechat.builder.TextBuilder;
 import cn.lili.modules.wechat.entity.dos.WxSubscribe;
 import cn.lili.modules.wechat.entity.enums.SubscribeStatusEnums;
@@ -35,6 +41,9 @@ public class SubscribeHandler implements WxMpMessageHandler {
     @Autowired
     private TextBuilder textBuilder;
 
+    @Autowired
+    private SettingService settingService;
+
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService weixinService,
@@ -60,8 +69,18 @@ public class SubscribeHandler implements WxMpMessageHandler {
                 }
                 wxSubscribeService.saveOrUpdate(wxSubscribe);
             }
+            //获取微信公众号配置
+            Setting setting = settingService.get(SettingEnum.WECHAT_PUBLIC.name());
+            WechatPublicSetting wechatPublicSetting = setting == null ? null :JSONUtil.toBean(setting.getSettingValue(), WechatPublicSetting.class);
+            //返回消息
+            WxMpXmlOutMessage wxMpXmlOutMessage=null;
 
-            return textBuilder.build("感谢关注", wxMessage, weixinService);
+            if(wechatPublicSetting!=null){
+                wxMpXmlOutMessage = textBuilder.build(wechatPublicSetting.getSubscribeMessage(), wxMessage, weixinService);
+            }
+
+
+            return wxMpXmlOutMessage;
         } catch (WxErrorException e) {
             if (e.getError().getErrorCode() == 48001) {
                 log.info("该公众号没有获取用户信息权限！");

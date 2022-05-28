@@ -189,6 +189,10 @@ public class SettingManagerController {
                 return setting == null ?
                         ResultUtil.data(new HotWordsSetting()) :
                         ResultUtil.data(JSONUtil.toBean(setting.getSettingValue(), HotWordsSetting.class));
+            case WECHAT_PUBLIC:
+                return setting == null ?
+                        ResultUtil.data(new WechatPublicSetting()) :
+                        ResultUtil.data(JSONUtil.toBean(setting.getSettingValue(), WechatPublicSetting.class));
             default:
                 throw new ServiceException(ResultCode.SETTING_NOT_TO_SET);
         }

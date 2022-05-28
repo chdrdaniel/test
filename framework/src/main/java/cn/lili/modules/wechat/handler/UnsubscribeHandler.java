@@ -1,5 +1,10 @@
 package cn.lili.modules.wechat.handler;
 
+import cn.hutool.json.JSONUtil;
+import cn.lili.modules.system.entity.dos.Setting;
+import cn.lili.modules.system.entity.dto.WechatPublicSetting;
+import cn.lili.modules.system.entity.enums.SettingEnum;
+import cn.lili.modules.system.service.SettingService;
 import cn.lili.modules.wechat.builder.TextBuilder;
 import cn.lili.modules.wechat.entity.dos.WxSubscribe;
 import cn.lili.modules.wechat.entity.enums.SubscribeStatusEnums;
@@ -31,6 +36,9 @@ public class UnsubscribeHandler implements WxMpMessageHandler {
     @Autowired
     private TextBuilder textBuilder;
 
+    @Autowired
+    private SettingService settingService;
+
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService wxMpService,
@@ -40,7 +48,17 @@ public class UnsubscribeHandler implements WxMpMessageHandler {
         //更新数据库为取消关注
         wxSubscribeService.update(new LambdaUpdateWrapper<WxSubscribe>().eq(WxSubscribe::getId,openId).set(WxSubscribe::getSubscribeStatus,SubscribeStatusEnums.CANCEL_SUBSCRIBE.name()));
 
-        return textBuilder.build("感谢陪伴", wxMessage, wxMpService);
+        //获取微信公众号配置
+        Setting setting = settingService.get(SettingEnum.WECHAT_PUBLIC.name());
+        WechatPublicSetting wechatPublicSetting = setting == null ? null : JSONUtil.toBean(setting.getSettingValue(), WechatPublicSetting.class);
+        //返回消息
+        WxMpXmlOutMessage wxMpXmlOutMessage=null;
+
+        if(wechatPublicSetting!=null){
+            wxMpXmlOutMessage =  textBuilder.build(wechatPublicSetting.getUnsubscribeMessage(), wxMessage, wxMpService);
+        }
+
+        return wxMpXmlOutMessage;
     }
 
 }

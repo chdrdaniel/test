@@ -46,5 +46,7 @@ public enum SettingEnum {
     //微信支付设置
     WECHAT_PAYMENT,
     //热词设置
-    HOT_WORDS
+    HOT_WORDS,
+    //微信公众号设置
+    WECHAT_PUBLIC
 }
