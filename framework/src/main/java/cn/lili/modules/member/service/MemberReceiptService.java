@@ -71,4 +71,12 @@ public interface MemberReceiptService extends IService<MemberReceipt> {
      */
     Boolean add(MemberReceipt memberReceipt);
 
+    /**
+     * 获取会员默认发票
+     *
+     * @param receiptType 发票类型
+     * @return
+     */
+    MemberReceipt getDefault(String receiptType);
+
 }

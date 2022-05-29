@@ -72,4 +72,23 @@ public class MemberReceiptController {
     }
 
 
+    @ApiOperation(value = "查询发票集合")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", value = "发票类型", required = true, dataType = "String", paramType = "path"),
+    })
+    @GetMapping("/{type}/default")
+    public ResultMessage<Object> getDefault(@PathVariable String type) {
+        return ResultUtil.data(memberReceiptService.getDefault(type));
+    }
+
+    @ApiOperation(value = "发票详情 ")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "发票id", required = true, dataType = "String", paramType = "path"),
+    })
+    @GetMapping("/{id}")
+    public ResultMessage<Object> get(@PathVariable String id) {
+        return ResultUtil.data(memberReceiptService.getById(id));
+    }
+
+
 }

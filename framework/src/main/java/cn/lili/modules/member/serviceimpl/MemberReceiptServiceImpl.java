@@ -3,6 +3,7 @@ package cn.lili.modules.member.serviceimpl;
 
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.exception.ServiceException;
+import cn.lili.common.security.context.UserContext;
 import cn.lili.common.utils.BeanUtil;
 import cn.lili.common.utils.DateUtil;
 import cn.lili.common.vo.PageVO;
@@ -17,6 +18,7 @@ import cn.lili.modules.member.service.MemberReceiptService;
 import cn.lili.modules.member.service.MemberService;
 import cn.lili.modules.order.order.entity.vo.ReceiptVO;
 import cn.lili.mybatis.util.PageUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -158,7 +160,16 @@ public class MemberReceiptServiceImpl extends ServiceImpl<MemberReceiptMapper, M
             return this.baseMapper.insert(memberReceipt) >= 0 ? true : false;
         } else {
             memberReceipt.setId(temp.getId());
+            memberReceipt.setIsDefault(memberReceipt.getIsDefault());
             return this.baseMapper.updateById(memberReceipt) >= 0 ? true : false;
         }
+    }
+
+    @Override
+    public MemberReceipt getDefault(String receiptType) {
+        return this.baseMapper.selectOne(new LambdaQueryWrapper<MemberReceipt>()
+                .eq(MemberReceipt::getReceiptType, receiptType)
+                .eq(MemberReceipt::getIsDefault, true)
+                .eq(MemberReceipt::getMemberId, UserContext.getCurrentUser().getId()));
     }
 }
