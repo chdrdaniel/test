@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 26/05/2022 11:45:11
+ Date: 31/05/2022 16:02:19
 */
 
 SET NAMES utf8mb4;
@@ -48,6 +48,8 @@ CREATE TABLE `li_wechat_the_public_message`  (
   `msg_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息id，64位整型',
   `msg_data_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息的数据ID（消息如果来自文章时才有）',
   `idx` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '多图文时第几篇文章，从1开始（消息如果来自文章时才有）',
+  `message_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '消息类型-接收(receive) 回复(reply)',
+  `wx_template_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '微信模板消息id',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 

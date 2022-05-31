@@ -1,6 +1,8 @@
 package cn.lili.modules.wechat.entity.dos;
 
 import cn.lili.common.utils.BeanUtil;
+import cn.lili.modules.wechat.entity.dto.WxSendTemplateParams;
+import cn.lili.modules.wechat.entity.enums.WxMessageTypeEnums;
 import cn.lili.modules.wechat.entity.enums.WxNewsTypeEnums;
 import cn.lili.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,6 +11,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+
+import java.util.Date;
 
 /**
  * @author: ftyy
@@ -82,10 +86,27 @@ public class WechatThePublicMessage extends BaseEntity {
     @ApiModelProperty(value = "多图文时第几篇文章，从1开始（消息如果来自文章时才有）")
     private String idx;
 
+    /**
+     * @see WxMessageTypeEnums
+     */
+    @ApiModelProperty(value = "消息类型-接收(receive) 回复(reply)")
+    private String messageType;
+
+    @ApiModelProperty(value = "微信模板消息id")
+    private String wxTemplateId;
+
     public WechatThePublicMessage(WxMpXmlMessage wxMpXmlMessage){
         BeanUtil.copyProperties(wxMpXmlMessage,this);
         this.toUserName=wxMpXmlMessage.getToUser();
         this.fromUserName=wxMpXmlMessage.getFromUser();
         this.setWechatCreateTime(wxMpXmlMessage.getCreateTime());
+        this.messageType=WxMessageTypeEnums.WX_MESSAGE_RECEIVE.name();
     }
+
+    public WechatThePublicMessage(WxSendTemplateParams wxSendTemplateParams){
+        this.fromUserName=wxSendTemplateParams.getOpenId();
+        this.setWechatCreateTime(System.currentTimeMillis());
+        this.messageType=WxMessageTypeEnums.WX_MESSAGE_REPLY.name();
+    }
+
 }

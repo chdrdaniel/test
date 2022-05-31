@@ -143,6 +143,7 @@ ignored:
     - /manager/wechat/wxPortal/**
     - /manager/wechat/wxMenu/**
     - /manager/wechat/wxSubscribe/**
+    - /manager/wechat/wxSendTemplate/**
     - /druid/**
     - /swagger-ui.html
     - /doc.html
