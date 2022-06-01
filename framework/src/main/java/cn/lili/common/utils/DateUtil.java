@@ -412,4 +412,20 @@ public class DateUtil {
         ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Shanghai"));
         return Date.from(zonedDateTime.toInstant());
     }
+
+
+    /**
+     * 获取当前时间之前几天的日期
+     * @param day
+     * @return
+     */
+    public static Date getSomeTime(Integer day) {
+        //初始值
+        Calendar calendar = Calendar.getInstance();
+
+        //- day 天
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - day);
+        return calendar.getTime();
+    }
+
 }
