@@ -2,18 +2,22 @@ package cn.lili.timetask.handler.impl.wechat;
 
 import cn.lili.common.utils.DateUtil;
 import cn.lili.modules.wechat.entity.dos.WxInterfaceStatistics;
+import cn.lili.modules.wechat.entity.dos.WxUserLabel;
 import cn.lili.modules.wechat.entity.dos.WxUserStatistics;
 import cn.lili.modules.wechat.service.WechatInterfaceStatisticsService;
 import cn.lili.modules.wechat.service.WechatStatisticsService;
+import cn.lili.modules.wechat.service.WxUserLabelService;
 import cn.lili.timetask.handler.EveryDayExecute;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeInterfaceResult;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeUserCumulate;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeUserSummary;
+import me.chanjar.weixin.mp.bean.tag.WxUserTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,12 +37,17 @@ public class WechatStatisticsExecute implements EveryDayExecute {
     @Autowired
     private WechatInterfaceStatisticsService wechatInterfaceStatisticsService;
 
+    @Autowired
+    private WxUserLabelService wxUserLabelService;
+
     @Override
     public void execute() {
         //同步昨日微信用户统计
-         this.updateWxUserStatistics();
+        this.updateWxUserStatistics();
         //同步昨日微信接口统计
         this.updateWxInterfaceStatistics();
+        //同步微信公众号标签列表
+        this.updateWxUserLabel();
     }
 
     /**
@@ -62,6 +71,9 @@ public class WechatStatisticsExecute implements EveryDayExecute {
     }
 
 
+    /**
+     * 同步昨日微信接口统计
+     */
     public void updateWxInterfaceStatistics() {
         try {
             //时间
@@ -88,6 +100,32 @@ public class WechatStatisticsExecute implements EveryDayExecute {
             }
 
             wechatInterfaceStatisticsService.save(wxInterfaceStatistics);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 同步微信公众号标签列表
+     */
+    public void updateWxUserLabel(){
+        try {
+            //获取微信公众号所有标签
+            List<WxUserTag> wxUserTagList = wxMpService.getUserTagService().tagGet();
+            List<WxUserLabel> wxUserLabelList =new ArrayList();
+
+            if(!wxUserTagList.isEmpty() && wxUserTagList.size()>0){
+                wxUserTagList.stream().forEach(wxUserTag->{
+                    WxUserLabel wxUserLabel = new WxUserLabel();
+                    wxUserLabel.setId(String.valueOf(wxUserTag.getId()));
+                    wxUserLabel.setName(wxUserTag.getName());
+                    wxUserLabel.setCount(wxUserTag.getCount());
+                    wxUserLabelList.add(wxUserLabel);
+                });
+                wxUserLabelService.saveOrUpdateBatch(wxUserLabelList);
+            }
+
+
         } catch (WxErrorException e) {
             e.printStackTrace();
         }

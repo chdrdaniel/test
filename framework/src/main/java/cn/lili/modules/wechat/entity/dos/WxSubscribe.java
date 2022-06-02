@@ -1,6 +1,5 @@
 package cn.lili.modules.wechat.entity.dos;
 
-import cn.lili.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,6 +30,9 @@ public class WxSubscribe {
 
     @ApiModelProperty(value = "用户被打上的标签 ID 列表")
     private String tagid_list;
+
+    @ApiModelProperty(value = "用户被打上的标签名称列表")
+    private String tagIdNameList;
 
     @ApiModelProperty(value = "返回用户关注的渠道来源")
     private String subscribe_scene;

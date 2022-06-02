@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * @author: ftyy
- * @description: 描述
+ * @description: 微信公众号菜单
  */
 @Data
 @NoArgsConstructor
