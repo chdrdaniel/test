@@ -38,7 +38,7 @@ public class WechatStatisticsController {
     }
 
     @ApiOperation(value = "获取微信公众号接口统计")
-    @GetMapping("/getWxUserStatistics")
+    @GetMapping("/getWxInterfaceStatistics")
     public ResultMessage<List<WxInterfaceStatistics>> getWxInterfaceStatistics(WxStatisticsParams wxStatisticsParams) {
         return ResultUtil.data(wechatInterfaceStatisticsService.getWxInterfaceStatistics(wxStatisticsParams));
     }

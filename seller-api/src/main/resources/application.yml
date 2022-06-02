@@ -266,3 +266,9 @@ xxl:
       port: 8891
       logpath: ./xxl-job/executor
       logretentiondays: 7
+wx:
+  mp:
+    appId: wxc7ecddc1777a744a
+    secret: 614118281e96dd07abe4d8284581278d
+    token: itzhishi
+    aesKey:

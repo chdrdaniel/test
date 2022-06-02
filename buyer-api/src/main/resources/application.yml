@@ -3,17 +3,17 @@ server:
 
   servlet:
     context-path: /
-#
-#  tomcat:
-#    #最大链接数，默认不设置，默认是10000
-#    max-connections: 6500
-#    #最大等待队列长度，允许HTTP请求缓存到请求队列的最大个数，默认不限制
-#    accept-count: 1000
-#    threads:
-#      #最少闲置
-#      min-spare: 50
-#      #最大线程数  ，默认是200
-#      max: 800
+  #
+  #  tomcat:
+  #    #最大链接数，默认不设置，默认是10000
+  #    max-connections: 6500
+  #    #最大等待队列长度，允许HTTP请求缓存到请求队列的最大个数，默认不限制
+  #    accept-count: 1000
+  #    threads:
+  #      #最少闲置
+  #      min-spare: 50
+  #      #最大线程数  ，默认是200
+  #      max: 800
   netty:
     connection-timeout:
 
@@ -186,7 +186,7 @@ logging:
   # 输出级别
   level:
     root: info
-#    org.springframework: debug
+  #    org.springframework: debug
   file:
     # 指定路径
     path: lili-logs
@@ -290,3 +290,9 @@ xxl:
       port: 8891
       logpath: ./xxl-job/executor
       logretentiondays: 7
+wx:
+  mp:
+    appId: wxc7ecddc1777a744a
+    secret: 614118281e96dd07abe4d8284581278d
+    token: itzhishi
+    aesKey:
