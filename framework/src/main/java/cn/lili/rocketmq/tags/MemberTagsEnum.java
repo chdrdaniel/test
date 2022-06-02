@@ -26,7 +26,12 @@ public enum MemberTagsEnum {
     /**
      * 会员积分变动
      */
-    MEMBER_POINT_CHANGE("会员积分变动");
+    MEMBER_POINT_CHANGE("会员积分变动"),
+
+    /**
+     * 申请帮卖团长
+     */
+    MEMBER_APPLY_GROUP_HELP_STATUS_CHANGE("申请帮卖团长");
 
     private final String description;
 

@@ -1,6 +1,7 @@
 package cn.lili.event.impl;
 
 import cn.lili.event.*;
+import cn.lili.modules.group.entity.dto.GroupHelpMessage;
 import cn.lili.modules.member.entity.dto.MemberPointMessage;
 import cn.lili.modules.member.entity.enums.PointTypeEnum;
 import cn.lili.modules.message.entity.dto.NoticeMessageDTO;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @since 2020-07-03 11:20
  **/
 @Service
-public class NoticeMessageExecute implements TradeEvent, OrderStatusChangeEvent, AfterSaleStatusChangeEvent, MemberPointChangeEvent, MemberWithdrawalEvent {
+public class NoticeMessageExecute implements TradeEvent, OrderStatusChangeEvent, AfterSaleStatusChangeEvent, MemberPointChangeEvent, MemberWithdrawalEvent, MemberGroupHelpStatusChangeEvent {
 
     @Autowired
     private NoticeMessageService noticeMessageService;
@@ -234,5 +235,25 @@ public class NoticeMessageExecute implements TradeEvent, OrderStatusChangeEvent,
         }
 
 
+    }
+
+    @Override
+    public void memberGroupHelpStatusChange(GroupHelpMessage message) {
+        NoticeMessageDTO noticeMessageDTO = new NoticeMessageDTO();
+        noticeMessageDTO.setMemberId(message.getMemberId());
+        Map<String, String> params = new HashMap<>();
+        params.put(NoticeMessageParameterEnum.STORE_NAME.getType(), message.getStroreName());
+        switch (message.getNewStatus()) {
+            case REFUSE:
+                noticeMessageDTO.setNoticeMessageNodeEnum(NoticeMessageNodeEnum.GROUP_HELP_APPLY_REFUSE);
+                break;
+            case PASS:
+                noticeMessageDTO.setNoticeMessageNodeEnum(NoticeMessageNodeEnum.GROUP_HELP_APPLY_PASS);
+                break;
+            default:
+                break;
+        }
+        noticeMessageDTO.setParameter(params);
+        noticeMessageService.noticeMessage(noticeMessageDTO);
     }
 }

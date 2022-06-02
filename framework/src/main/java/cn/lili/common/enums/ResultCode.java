@@ -245,6 +245,13 @@ public enum ResultCode {
     EVALUATION_DOUBLE_ERROR(35001, "无法重复提交评价"),
 
     /**
+     * 自提点
+     */
+    SELF_LIFTING_ABANDON_ERROR(36001,"自提点作废失败"),
+    SELF_LIFTING_UPDATE_TYPE_ERROR(36002,"修改自提点分类失败"),
+    SELF_LIFTING_RECOVERY_ERROR(36002,"恢复自提点失败"),
+
+    /**
      * 活动
      */
     PROMOTION_GOODS_NOT_EXIT(40000, "当前促销商品不存在！"),
@@ -459,6 +466,22 @@ public enum ResultCode {
     WECHAT_MP_MESSAGE_TMPL_ERROR(80306, "未能获取到微信模版消息id"),
     WECHAT_ERROR(80307, "微信接口异常"),
     APP_VERSION_EXIST(80307, "APP版本已存在"),
+
+    /**
+     * 帮卖
+     */
+    GROUP_HELP_APPLY_ERROR(80401,"申请帮卖会员失败"),
+    GROUP_HELP_AUTH_ERROR(80402,"帮卖会员审核失败"),
+    GROUP_HELP_RETREAT_ERROR(80403,"帮卖会员清退失败"),
+    GROUP_HELP_RESUME_ERROR(80404,"帮卖会员恢复失败"),
+    GROUP_HELP_IS_APPLY_ERROR(80601,"用户已经申请帮卖团长,请耐心等待"),
+
+    /**
+     * 团购商品
+     */
+    GROUP_GOODS_REMOVE_ERROR(80501,"删除团购商品失败"),
+    GROUP_GOODS_UPDATE_ERROR(80502,"修改团购商品失败"),
+
 
     /**
      * 其他

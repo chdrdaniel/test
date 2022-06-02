@@ -40,6 +40,12 @@ public enum NoticeMessageNodeEnum {
     PINTUAN_SUCCESS("拼团成功通知"),
 
     /**
+     * 申请帮卖
+     */
+    GROUP_HELP_APPLY_PASS("申请帮卖会员成功"),
+    GROUP_HELP_APPLY_REFUSE("申请帮卖会员失败"),
+
+    /**
      * 积分
      */
     POINT_CHANGE("积分变更通知"),

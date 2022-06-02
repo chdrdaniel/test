@@ -1,10 +1,8 @@
 package cn.lili.listener;
 
 import cn.hutool.json.JSONUtil;
-import cn.lili.event.MemberLoginEvent;
-import cn.lili.event.MemberPointChangeEvent;
-import cn.lili.event.MemberRegisterEvent;
-import cn.lili.event.MemberWithdrawalEvent;
+import cn.lili.event.*;
+import cn.lili.modules.group.entity.dto.GroupHelpMessage;
 import cn.lili.modules.member.entity.dos.Member;
 import cn.lili.modules.member.entity.dos.MemberSign;
 import cn.lili.modules.member.entity.dto.MemberPointMessage;
@@ -57,6 +55,12 @@ public class MemberMessageListener implements RocketMQListener<MessageExt> {
      */
     @Autowired
     private List<MemberLoginEvent> memberLoginEvents;
+
+    /**
+     * 帮卖会员申请
+     */
+    @Autowired
+    private List<MemberGroupHelpStatusChangeEvent> memberGroupHelpStatusChangeEvents;
 
 
     @Override
@@ -120,6 +124,19 @@ public class MemberMessageListener implements RocketMQListener<MessageExt> {
                         log.error("会员{},在{}业务中，提现事件执行异常",
                                 new String(messageExt.getBody()),
                                 memberWithdrawalEvent.getClass().getName(),
+                                e);
+                    }
+                }
+                break;
+            case MEMBER_APPLY_GROUP_HELP_STATUS_CHANGE:
+                for(MemberGroupHelpStatusChangeEvent memberGroupHelpStatusChangeEvent:memberGroupHelpStatusChangeEvents){
+                    try{
+                        GroupHelpMessage groupHelpMessage = JSONUtil.toBean(new String(messageExt.getBody()), GroupHelpMessage.class);
+                        memberGroupHelpStatusChangeEvent.memberGroupHelpStatusChange(groupHelpMessage);
+                    }catch (Exception e){
+                        log.error("会员{},在{}业务中，状态修改事件执行异常",
+                                new String(messageExt.getBody()),
+                                memberGroupHelpStatusChangeEvent.getClass().getName(),
                                 e);
                     }
                 }

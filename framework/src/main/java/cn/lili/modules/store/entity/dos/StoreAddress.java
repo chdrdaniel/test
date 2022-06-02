@@ -28,12 +28,39 @@ public class StoreAddress extends BaseEntity {
 
     @ApiModelProperty(value = "经纬度")
     @NotEmpty
-    private String center;
+    private String addressId;
 
     @ApiModelProperty(value = "地址")
-    private String address;
+    private String addressPath;
+
+    @ApiModelProperty("自提点详细地址")
+    private String addressDetail;
 
     @ApiModelProperty(value = "电话")
     private String mobile;
+
+    @ApiModelProperty("自提点联系人")
+    private String contacts;
+
+    @ApiModelProperty("自提点团长Id")
+    private String headId;
+
+    @ApiModelProperty("自提点团长名称")
+    private String headName;
+
+    @ApiModelProperty("自提点团长图标")
+    private String headFace;
+
+    @ApiModelProperty("自提点联系人电话")
+    private String contactMobile;
+
+    @ApiModelProperty("自提点图片")
+    private String addressImage;
+
+    @ApiModelProperty("订单数")
+    private int orderNumber;
+
+    @ApiModelProperty("销售额")
+    private double salesVolume;
 
 }

@@ -39,7 +39,12 @@ public enum NoticeMessageParameterEnum {
     /**
      * 金额
      */
-    PRICE("price", "金额");
+    PRICE("price", "金额"),
+
+    /**
+     * 店铺名称
+     */
+    STORE_NAME("store_name","店铺名称");
 
     private final String type;
     private final String description;

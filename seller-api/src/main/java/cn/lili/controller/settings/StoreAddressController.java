@@ -7,6 +7,7 @@ import cn.lili.common.security.context.UserContext;
 import cn.lili.common.vo.PageVO;
 import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.store.entity.dos.StoreAddress;
+import cn.lili.modules.store.entity.dto.StoreAddressParams;
 import cn.lili.modules.store.service.StoreAddressService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,9 +39,9 @@ public class StoreAddressController {
 
     @ApiOperation(value = "获取商家自提点分页")
     @GetMapping
-    public ResultMessage<IPage<StoreAddress>> get(PageVO pageVo) {
+    public ResultMessage<IPage<StoreAddress>> get(StoreAddressParams storeAddressParams) {
         String storeId = Objects.requireNonNull(UserContext.getCurrentUser()).getStoreId();
-        return ResultUtil.data(storeAddressService.getStoreAddress(storeId, pageVo));
+        return ResultUtil.data(storeAddressService.getStoreAddress(storeAddressParams));
     }
 
     @ApiOperation(value = "获取商家自提点信息")
@@ -79,5 +81,23 @@ public class StoreAddressController {
         storeAddressService.removeStoreAddress(id);
         return ResultUtil.success();
     }
+
+    @ApiOperation(value = "作废")
+    @ApiImplicitParam(name = "ids", value = "自提点ID", required = true, paramType = "path")
+    @DeleteMapping(value = "/{ids}")
+    public ResultMessage<Object> abandon(@PathVariable List<String> ids) {
+        storeAddressService.abandon(ids);
+        return ResultUtil.success();
+    }
+
+    @ApiOperation(value = "恢复")
+    @ApiImplicitParam(name = "id", value = "自提点ID", required = true, paramType = "path")
+    @DeleteMapping(value = "/{id}")
+    public ResultMessage<Object> recovery(@PathVariable String id) {
+        OperationalJudgment.judgment(storeAddressService.getById(id));
+        storeAddressService.recovery(id);
+        return ResultUtil.success();
+    }
+
 
 }
