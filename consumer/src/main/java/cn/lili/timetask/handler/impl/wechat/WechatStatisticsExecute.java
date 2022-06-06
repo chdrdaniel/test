@@ -1,11 +1,13 @@
 package cn.lili.timetask.handler.impl.wechat;
 
+import cn.lili.common.utils.CurrencyUtil;
 import cn.lili.common.utils.DateUtil;
 import cn.lili.modules.wechat.entity.dos.WxInterfaceStatistics;
 import cn.lili.modules.wechat.entity.dos.WxUserLabel;
 import cn.lili.modules.wechat.entity.dos.WxUserStatistics;
 import cn.lili.modules.wechat.service.WechatInterfaceStatisticsService;
 import cn.lili.modules.wechat.service.WechatStatisticsService;
+import cn.lili.modules.wechat.service.WxMaterialUploadService;
 import cn.lili.modules.wechat.service.WxUserLabelService;
 import cn.lili.timetask.handler.EveryDayExecute;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -13,6 +15,7 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeInterfaceResult;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeUserCumulate;
 import me.chanjar.weixin.mp.bean.datacube.WxDataCubeUserSummary;
+import me.chanjar.weixin.mp.bean.material.WxMpMaterialNewsBatchGetResult;
 import me.chanjar.weixin.mp.bean.tag.WxUserTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +43,9 @@ public class WechatStatisticsExecute implements EveryDayExecute {
     @Autowired
     private WxUserLabelService wxUserLabelService;
 
+    @Autowired
+    private WxMaterialUploadService wxMaterialUploadService;
+
     @Override
     public void execute() {
         //同步昨日微信用户统计
@@ -48,6 +54,8 @@ public class WechatStatisticsExecute implements EveryDayExecute {
         this.updateWxInterfaceStatistics();
         //同步微信公众号标签列表
         this.updateWxUserLabel();
+        //定时同步图文素材
+        this.materialUpload();
     }
 
     /**
@@ -125,6 +133,37 @@ public class WechatStatisticsExecute implements EveryDayExecute {
                 wxUserLabelService.saveOrUpdateBatch(wxUserLabelList);
             }
 
+
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void materialUpload(){
+        try {
+            //获取微信公众号图文信息
+            WxMpMaterialNewsBatchGetResult wxMpMaterialNewsBatchGetResult = this.wxMpService.getMaterialService().materialNewsBatchGet(0, 20);
+            //校验微信公众号素材不为空
+            if(wxMpMaterialNewsBatchGetResult!=null
+                    && wxMpMaterialNewsBatchGetResult.getTotalCount()>0
+                    && !wxMpMaterialNewsBatchGetResult.getItems().isEmpty()
+                    && wxMpMaterialNewsBatchGetResult.getItems().size()>0){
+                //添加初次请求数据
+                wxMaterialUploadService.saveList(wxMpMaterialNewsBatchGetResult.getItems());
+                //计算总页数（总条数/条数）
+                Integer pageNumber = Integer.valueOf((int) CurrencyUtil.div(wxMpMaterialNewsBatchGetResult.getTotalCount(), 20));
+                //总条数不为整数时 多请求一次
+                if(wxMpMaterialNewsBatchGetResult.getTotalCount() % 2==1){
+                    pageNumber=++pageNumber;
+                }
+                //循环请求
+                for (int i = wxMpMaterialNewsBatchGetResult.getItemCount()-1; i <= pageNumber; i=i+20) {
+                    //获取微信公众号图文信息
+                    WxMpMaterialNewsBatchGetResult wxMpMaterialNewsBatchGet = this.wxMpService.getMaterialService().materialNewsBatchGet(i, 20);
+                    wxMaterialUploadService.saveList(wxMpMaterialNewsBatchGet.getItems());
+                }
+
+            }
 
         } catch (WxErrorException e) {
             e.printStackTrace();
