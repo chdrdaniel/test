@@ -1,5 +1,6 @@
 package cn.lili.modules.member.entity.dos;
 
+import cn.lili.modules.order.order.entity.vo.ReceiptVO;
 import cn.lili.mybatis.BaseIdEntity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -98,6 +99,7 @@ public class MemberReceipt extends BaseIdEntity {
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间", hidden = true)
     private Date createTime;
+
 
 
 }

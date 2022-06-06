@@ -32,20 +32,21 @@ public interface MemberReceiptService extends IService<MemberReceipt> {
     /**
      * 添加会员发票信息
      *
-     * @param memberReceiptAddVO 会员发票信息
-     * @param memberId           会员ID
+     * @param receiptVO 会员发票信息
+     * @param memberId  会员ID
      * @return 操作状态
      */
-    Boolean addMemberReceipt(MemberReceiptAddVO memberReceiptAddVO, String memberId);
+    Boolean addMemberReceipt(ReceiptVO receiptVO, String memberId);
 
     /**
      * 修改会员发票信息
      *
-     * @param memberReceiptAddVO 会员发票信息
-     * @param memberId           会员ID
+     * @param receiptVO 会员发票信息
+     * @param id            发票id
+     * @param memberId      会员ID
      * @return 操作状态
      */
-    Boolean editMemberReceipt(MemberReceiptAddVO memberReceiptAddVO, String memberId);
+    Boolean editMemberReceipt(ReceiptVO receiptVO, String id, String memberId);
 
     /**
      * 删除会员发票信息

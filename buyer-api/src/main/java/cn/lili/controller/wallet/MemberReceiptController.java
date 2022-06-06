@@ -4,18 +4,20 @@ package cn.lili.controller.wallet;
 import cn.lili.common.aop.annotation.PreventDuplicateSubmissions;
 import cn.lili.common.enums.ResultUtil;
 import cn.lili.common.security.context.UserContext;
+import cn.lili.common.utils.BeanUtil;
 import cn.lili.common.vo.PageVO;
 import cn.lili.common.vo.ResultMessage;
+import cn.lili.modules.member.entity.dos.MemberReceipt;
 import cn.lili.modules.member.entity.vo.MemberReceiptAddVO;
 import cn.lili.modules.member.entity.vo.MemberReceiptVO;
 import cn.lili.modules.member.service.MemberReceiptService;
+import cn.lili.modules.order.order.entity.vo.ReceiptVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 
 
 /**
@@ -42,16 +44,16 @@ public class MemberReceiptController {
     @PreventDuplicateSubmissions
     @ApiOperation(value = "新增会员发票")
     @PostMapping
-    public ResultMessage<Object> add(MemberReceiptAddVO memberReceiptAddVO) {
-        return ResultUtil.data(memberReceiptService.addMemberReceipt(memberReceiptAddVO, UserContext.getCurrentUser().getId()));
+    public ResultMessage<Object> add(ReceiptVO receiptVO) {
+        return ResultUtil.data(memberReceiptService.addMemberReceipt(receiptVO, UserContext.getCurrentUser().getId()));
     }
 
     @ApiOperation(value = "修改会员发票")
     @ApiImplicitParam(name = "id", value = "会员发票id", required = true, paramType = "path")
     @PutMapping
-    public ResultMessage<Object> update(@PathVariable String id, MemberReceiptAddVO memberReceiptAddVO) {
-        memberReceiptAddVO.setId(id);
-        return ResultUtil.data(memberReceiptService.editMemberReceipt(memberReceiptAddVO, id));
+    public ResultMessage<Object> update(@PathVariable String id, ReceiptVO receiptVO) {
+
+        return ResultUtil.data(memberReceiptService.editMemberReceipt(receiptVO, id, UserContext.getCurrentUser().getId()));
     }
 
     @ApiOperation(value = "会员发票删除")
