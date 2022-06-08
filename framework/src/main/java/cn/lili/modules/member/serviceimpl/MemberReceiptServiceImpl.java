@@ -93,6 +93,17 @@ public class MemberReceiptServiceImpl extends ServiceImpl<MemberReceiptMapper, M
         if (receipt == null) {
             throw new ServiceException(ResultCode.USER_RECEIPT_NOT_EXIST);
         }
+        //校验发票信息是否重复
+        List<MemberReceipt> receipts = this.baseMapper.selectList(new QueryWrapper<MemberReceipt>()
+                .eq("member_id", memberId)
+                .eq("receipt_type", receiptVO.getReceiptType())
+                .eq("company_name", receiptVO.getCompanyName())
+                .eq("taxpayer_id", receiptVO.getTaxpayerId())
+                .ne("id", id)
+        );
+        if (receipts.size() > 0) {
+            throw new ServiceException(ResultCode.USER_RECEIPT_REPEAT_ERROR);
+        }
         BeanUtil.copyProperties(receiptVO, receipt);
         return this.baseMapper.updateById(receipt) > 0 ? true : false;
 

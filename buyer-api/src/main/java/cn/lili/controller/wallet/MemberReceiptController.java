@@ -50,7 +50,7 @@ public class MemberReceiptController {
 
     @ApiOperation(value = "修改会员发票")
     @ApiImplicitParam(name = "id", value = "会员发票id", required = true, paramType = "path")
-    @PutMapping
+    @PutMapping("/{id}")
     public ResultMessage<Object> update(@PathVariable String id, ReceiptVO receiptVO) {
 
         return ResultUtil.data(memberReceiptService.editMemberReceipt(receiptVO, id, UserContext.getCurrentUser().getId()));
