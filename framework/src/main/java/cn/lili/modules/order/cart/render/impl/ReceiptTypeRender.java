@@ -68,8 +68,9 @@ public class ReceiptTypeRender implements CartRenderStep {
         //筛选出店铺开票的店铺
         List<StoreDetail> storeReceiptList = storeDetails.stream().
                 filter(storeDetail -> storeDetail.getReceiptSource().equals(ReceiptSourceEnum.STORE.name())).collect(Collectors.toList());
-
-        newList.addAll(storeReceiptList);
+        if (storeReceiptList.size() > 0) {
+            newList.addAll(storeReceiptList);
+        }
         //筛选店铺共同开启的发票类型
         //电子普通发票
         Boolean electronicStatus = true;
