@@ -57,13 +57,19 @@ public class ReceiptTypeRender implements CartRenderStep {
         ReceiptSetting receiptSetting = JSONUtil.toBean(receipt.getSettingValue(), ReceiptSetting.class);
         //批量获取店铺信息
         List<StoreDetail> storeDetails = storeDetailService.getDetailList(storeIds);
-        List<StoreDetail> newList = storeDetails.stream().map(store -> {
-            store.setElectronicStatus(receiptSetting.getElectronicStatus());
-            store.setVatStatus(receiptSetting.getVatStatus());
-            store.setVatSpecialStatus(receipt.getSettingValue());
-            return store;
-        }).filter(storeDetail -> storeDetail.getReceiptSource().equals(ReceiptSourceEnum.PLATFORM.name())).collect(Collectors.toList());
+        //筛选出平台开票的店铺
+        List<StoreDetail> newList = storeDetails.stream().filter(storeDetail -> storeDetail.getReceiptSource().equals(ReceiptSourceEnum.PLATFORM.name()))
+                .map(store -> {
+                    store.setElectronicStatus(receiptSetting.getElectronicStatus());
+                    store.setVatStatus(receiptSetting.getVatStatus());
+                    store.setVatSpecialStatus(receiptSetting.getVatSpecialStatus());
+                    return store;
+                }).collect(Collectors.toList());
+        //筛选出店铺开票的店铺
+        List<StoreDetail> storeReceiptList = storeDetails.stream().
+                filter(storeDetail -> storeDetail.getReceiptSource().equals(ReceiptSourceEnum.STORE.name())).collect(Collectors.toList());
 
+        newList.addAll(storeReceiptList);
         //筛选店铺共同开启的发票类型
         //电子普通发票
         Boolean electronicStatus = true;
