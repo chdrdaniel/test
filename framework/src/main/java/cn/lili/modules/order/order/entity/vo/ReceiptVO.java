@@ -75,4 +75,10 @@ public class ReceiptVO implements Serializable {
     @ApiModelProperty(value = "收票人详细地址")
     private String receiverReceiptAddress;
 
+    /**
+     * @see cn.lili.modules.store.entity.enums.ReceiptSourceEnum
+     */
+    @ApiModelProperty(value = "发票开具方")
+    private String receiptSource;
+
 }

@@ -8,6 +8,7 @@ import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.order.order.entity.dos.Receipt;
 import cn.lili.modules.order.order.entity.dto.OrderReceiptDTO;
 import cn.lili.modules.order.order.entity.dto.ReceiptSearchParams;
+import cn.lili.modules.order.order.entity.vo.OrderReceiptVO;
 import cn.lili.modules.order.order.service.OrderService;
 import cn.lili.modules.order.order.service.ReceiptService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -67,4 +68,11 @@ public class ReceiptStoreController {
         return ResultUtil.data(receiptService.getByOrderSn(orderSn));
     }
 
+
+    @ApiOperation(value = "通过id获取")
+    @ApiImplicitParam(name = "id", value = "发票ID", required = true, dataType = "String", paramType = "path")
+    @GetMapping(value = "/get/detail/{id}")
+    public ResultMessage<OrderReceiptVO> getOrderReceipt(@PathVariable String id) {
+        return ResultUtil.data(receiptService.getOrderReceipt(id));
+    }
 }

@@ -104,7 +104,6 @@ public class ReceiptTypeRender implements CartRenderStep {
         }
         //填充可开发票数据
         tradeDTO.setReceiptType(receiptType);
-        //组织数据
 
     }
 }

@@ -32,7 +32,6 @@ public class Receipt extends BaseEntity {
     @ApiModelProperty(value = "公司名称  如果是个人则是个人名称")
     private String companyName;
 
-
     @ApiModelProperty(value = "纳税人识别号")
     private String taxpayerId;
 
@@ -53,6 +52,12 @@ public class Receipt extends BaseEntity {
 
     @ApiModelProperty(value = "商家名称")
     private String storeName;
+
+    /**
+     * @see cn.lili.modules.store.entity.enums.ReceiptSourceEnum
+     */
+    @ApiModelProperty(value = "发票开具方")
+    private String receiptSource;
 
     @ApiModelProperty(value = "发票状态 0未开 1已开")
     private Integer receiptStatus;
