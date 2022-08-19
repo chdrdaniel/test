@@ -273,6 +273,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         QueryWrapper<OrderItem> orderItemWrapper = new QueryWrapper<>();
         orderItemWrapper.eq(ORDER_SN_COLUMN, orderSn);
+        orderItemWrapper.eq(ORDER_SN_COLUMN, orderSn);
         //查询订单项信息
         List<OrderItem> orderItems = orderItemMapper.selectList(orderItemWrapper);
         //查询订单日志信息
