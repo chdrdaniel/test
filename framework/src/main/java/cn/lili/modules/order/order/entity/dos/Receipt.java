@@ -103,5 +103,15 @@ public class Receipt extends BaseEntity {
     @ApiModelProperty(value = "收票人详细地址")
     private String receiverReceiptAddress;
 
+    @ApiModelProperty(value = "发票附件")
+    private String receiptFile;
 
+    @ApiModelProperty(value = "发货单号")
+    private String logisticsNo;
+
+    @ApiModelProperty(value = "物流公司Id")
+    private String logisticsId;
+
+    @ApiModelProperty(value = "物流公司名称")
+    private String logisticsName;
 }

@@ -3,13 +3,9 @@ package cn.lili.modules.order.order.entity.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 发票
@@ -81,4 +77,23 @@ public class ReceiptVO implements Serializable {
     @ApiModelProperty(value = "发票开具方")
     private String receiptSource;
 
+    @ApiModelProperty(value = "发票状态 0未开 1已开")
+    private Integer receiptStatus;
+
+
+    @ApiModelProperty(value = "发票金额")
+    private Double receiptPrice;
+
+
+    @ApiModelProperty(value = "发票附件")
+    private List<String> receiptFiles;
+
+    @ApiModelProperty(value = "发货单号")
+    private String logisticsNo;
+
+    @ApiModelProperty(value = "物流公司Id")
+    private String logisticsId;
+
+    @ApiModelProperty(value = "物流公司名称")
+    private String logisticsName;
 }

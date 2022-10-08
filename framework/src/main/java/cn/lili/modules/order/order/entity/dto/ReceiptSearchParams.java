@@ -38,10 +38,16 @@ public class ReceiptSearchParams {
     @ApiModelProperty(value = "发票状态")
     private String receiptStatus;
 
+    @ApiModelProperty(value = "公司名称  如果是个人则是个人名称")
+    private String companyName;
+
     public <T> QueryWrapper<T> wrapper() {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         if (StrUtil.isNotEmpty(receiptTitle)) {
             queryWrapper.like("r.receipt_title", receiptTitle);
+        }
+        if (StrUtil.isNotEmpty(companyName)) {
+            queryWrapper.like("r.company_name", companyName);
         }
         if (StrUtil.isNotEmpty(taxpayerId)) {
             queryWrapper.like("r.taxpayer_id", taxpayerId);

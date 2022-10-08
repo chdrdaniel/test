@@ -5,6 +5,7 @@ import cn.lili.modules.order.order.entity.dos.Receipt;
 import cn.lili.modules.order.order.entity.dto.OrderReceiptDTO;
 import cn.lili.modules.order.order.entity.dto.ReceiptSearchParams;
 import cn.lili.modules.order.order.entity.vo.OrderReceiptVO;
+import cn.lili.modules.order.order.entity.dto.ReceiptInvoicingDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -53,10 +54,10 @@ public interface ReceiptService extends IService<Receipt> {
     /**
      * 开具发票
      *
-     * @param receiptId 发票id
+     * @param receiptInvoicingDTO 开票信息
      * @return
      */
-    Receipt invoicing(String receiptId);
+    Receipt invoicing(ReceiptInvoicingDTO receiptInvoicingDTO);
 
     /**
      * 根据发票id查询订单发票信息

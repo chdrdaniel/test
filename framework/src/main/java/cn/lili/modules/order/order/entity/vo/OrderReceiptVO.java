@@ -1,21 +1,20 @@
 package cn.lili.modules.order.order.entity.vo;
 
+import cn.hutool.json.JSONUtil;
+import cn.lili.common.utils.BeanUtil;
+import cn.lili.common.utils.StringUtils;
 import cn.lili.modules.order.cart.entity.enums.DeliveryMethodEnum;
 import cn.lili.modules.order.order.entity.dos.Order;
-import cn.lili.modules.order.order.entity.dos.OrderItem;
 import cn.lili.modules.order.order.entity.dos.Receipt;
 import cn.lili.modules.order.order.entity.enums.DeliverStatusEnum;
 import cn.lili.modules.order.order.entity.enums.OrderStatusEnum;
 import cn.lili.modules.order.order.entity.enums.PayStatusEnum;
-import cn.lili.modules.order.trade.entity.dos.OrderLog;
 import cn.lili.modules.payment.entity.enums.PaymentMethodEnum;
-import cn.lili.modules.system.entity.vo.StoreLogisticsVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 发票
@@ -26,7 +25,6 @@ import java.util.List;
 @Data
 @ApiModel(value = "发票")
 public class OrderReceiptVO implements Serializable {
-
 
     /**
      * 订单
@@ -39,41 +37,26 @@ public class OrderReceiptVO implements Serializable {
     private String orderStatusValue;
 
     /**
-     * 付款状态
-     */
-    private String payStatusValue;
-
-    /**
-     * 物流状态
-     */
-    private String deliverStatusValue;
-
-    /**
      * 物流类型
      */
     private String deliveryMethodValue;
 
     /**
-     * 支付类型
-     */
-    private String paymentMethodValue;
-
-    /**
      * 发票
      */
-    private Receipt receipt;
-
-    /**
-     * 物流公司
-     */
-    private List<StoreLogisticsVO> storeLogisticsVOS;
+    private ReceiptDetailVO receipt;
 
     @ApiModelProperty(value = "价格详情")
     private String priceDetail;
 
     public OrderReceiptVO(Order order, Receipt receipt) {
         this.order = order;
-        this.receipt = receipt;
+        ReceiptDetailVO receiptDetailVO = new ReceiptDetailVO();
+        BeanUtil.copyProperties(receipt,receiptDetailVO);
+        if(StringUtils.isNotEmpty(receipt.getReceiptFile())){
+            receiptDetailVO.setReceiptFiles(JSONUtil.toList(receipt.getReceiptFile(),String.class));
+        }
+        this.receipt = receiptDetailVO;
     }
 
     /**

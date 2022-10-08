@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 管理端,物流公司接口
@@ -64,4 +65,11 @@ public class LogisticsManagerController {
         logisticsService.removeById(id);
         return ResultUtil.success();
     }
+
+    @ApiOperation(value = "获取开启中的物流公司")
+    @GetMapping("/list")
+    public ResultMessage<List<Logistics>> getList() {
+        return ResultUtil.data(logisticsService.getOpenLogistics());
+    }
+
 }

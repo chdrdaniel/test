@@ -7,9 +7,11 @@ import cn.lili.common.vo.ResultMessage;
 import cn.lili.modules.order.order.entity.dos.Receipt;
 import cn.lili.modules.order.order.entity.dto.OrderReceiptDTO;
 import cn.lili.modules.order.order.entity.dto.ReceiptSearchParams;
+import cn.lili.modules.order.order.entity.vo.OrderReceiptVO;
 import cn.lili.modules.order.order.service.ReceiptService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +49,13 @@ public class ReceiptBuyerController {
     @PostMapping
     public ResultMessage<Receipt> save(@Valid Receipt receipt) {
         return ResultUtil.data(receiptService.saveReceipt(receipt));
+    }
+
+    @ApiOperation(value = "通过id获取")
+    @ApiImplicitParam(name = "id", value = "发票ID", required = true, dataType = "String", paramType = "path")
+    @GetMapping(value = "/get/detail/{id}")
+    public ResultMessage<OrderReceiptVO> getOrderReceipt(@PathVariable String id) {
+        return ResultUtil.data(receiptService.getOrderReceipt(id));
     }
 
 }

@@ -1,20 +1,20 @@
 package cn.lili.modules.order.order.serviceimpl;
 
+import cn.hutool.json.JSONUtil;
 import cn.lili.common.enums.ResultCode;
 import cn.lili.common.exception.ServiceException;
+import cn.lili.common.utils.StringUtils;
 import cn.lili.modules.member.service.StoreLogisticsService;
 import cn.lili.modules.order.order.entity.dos.Order;
-import cn.lili.modules.order.order.entity.dos.OrderItem;
 import cn.lili.modules.order.order.entity.enums.ReceiptTypeEnum;
-import cn.lili.modules.order.order.entity.vo.OrderDetailVO;
 import cn.lili.modules.order.order.entity.vo.OrderReceiptVO;
-import cn.lili.modules.order.order.mapper.OrderItemMapper;
+import cn.lili.modules.order.order.entity.dto.ReceiptInvoicingDTO;
 import cn.lili.modules.order.order.service.OrderService;
-import cn.lili.modules.order.trade.entity.dos.OrderLog;
 import cn.lili.modules.store.entity.enums.ReceiptSourceEnum;
-import cn.lili.modules.store.entity.vos.StoreVO;
-import cn.lili.modules.store.service.StoreService;
+import cn.lili.modules.system.entity.dos.Logistics;
 import cn.lili.modules.system.entity.vo.StoreLogisticsVO;
+import cn.lili.modules.system.entity.vo.Traces;
+import cn.lili.modules.system.service.LogisticsService;
 import cn.lili.mybatis.util.PageUtil;
 import cn.lili.common.vo.PageVO;
 import cn.lili.modules.order.order.entity.dos.Receipt;
@@ -23,14 +23,12 @@ import cn.lili.modules.order.order.entity.dto.ReceiptSearchParams;
 import cn.lili.modules.order.order.mapper.ReceiptMapper;
 import cn.lili.modules.order.order.service.ReceiptService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -47,11 +45,12 @@ public class ReceiptServiceImpl extends ServiceImpl<ReceiptMapper, Receipt> impl
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private StoreLogisticsService storeLogisticsService;
 
-    @Resource
-    private OrderItemMapper orderItemMapper;
+    /**
+     * 物流公司
+     */
+    @Autowired
+    private LogisticsService logisticsService;
 
     @Override
     public IPage<OrderReceiptDTO> getReceiptData(ReceiptSearchParams searchParams, PageVO pageVO) {
@@ -86,11 +85,27 @@ public class ReceiptServiceImpl extends ServiceImpl<ReceiptMapper, Receipt> impl
     }
 
     @Override
-    public Receipt invoicing(String receiptId) {
+    public Receipt invoicing(ReceiptInvoicingDTO receiptInvoicingDTO) {
         //根据id查询发票信息
-        Receipt receipt = this.getById(receiptId);
+        Receipt receipt = this.getById(receiptInvoicingDTO.getId());
         if (receipt != null) {
             receipt.setReceiptStatus(1);
+            //如果发票附件存在则保存
+            if (receiptInvoicingDTO.getReceiptFiles() != null && receiptInvoicingDTO.getReceiptFiles().size() > 0) {
+                receipt.setReceiptFile(JSONUtil.toJsonStr(receiptInvoicingDTO.getReceiptFiles()));
+            }
+            //如果发票物流不为空则保存发票物流
+            if (StringUtils.isNotEmpty(receiptInvoicingDTO.getLogisticsId())) {
+                //获取对应物流
+                Logistics logistics = logisticsService.getById(receiptInvoicingDTO.getLogisticsId());
+                if (logistics == null) {
+                    throw new ServiceException(ResultCode.ORDER_LOGISTICS_ERROR);
+                }
+                receipt.setLogisticsId(logistics.getId());
+                receipt.setLogisticsName(logistics.getName());
+            }
+
+            receipt.setLogisticsNo(receiptInvoicingDTO.getLogisticsNo());
             this.saveOrUpdate(receipt);
             return receipt;
         }
@@ -110,12 +125,11 @@ public class ReceiptServiceImpl extends ServiceImpl<ReceiptMapper, Receipt> impl
             throw new ServiceException(ResultCode.ORDER_NOT_EXIST);
         }
         OrderReceiptVO orderReceiptVO = new OrderReceiptVO(order, receipt);
-        //如果需要发货 则查询物流公司信息
-        if (receipt.getReceiptSource().equals(ReceiptSourceEnum.STORE.value())
-                /*&& receipt.getReceiptStatus() == 0
-                && receipt.getReceiptType().equals(ReceiptTypeEnum.VAT_SPECIAL.name())*/) {
-            List<StoreLogisticsVO> storeLogisticsVOS = storeLogisticsService.getStoreSelectedLogistics(receipt.getStoreId());
-            orderReceiptVO.setStoreLogisticsVOS(storeLogisticsVOS);
+
+        //如果发票物流信息不为空 则查询物流信息
+        if (StringUtils.isNotEmpty(receipt.getLogisticsNo())) {
+            Traces traces = logisticsService.getLogistic(receipt.getLogisticsId(), receipt.getLogisticsNo(), "");
+            orderReceiptVO.getReceipt().setTraces(traces);
         }
         return orderReceiptVO;
     }
